@@ -42,7 +42,7 @@ public class ContactExcel {
 
 			Contact c = new Contact();
 			c.setContactNumber(contact_number);
-			c.setCareUser(u);
+			c.setUploadedBy(u);
 			System.out.println("sone Successfully");
 
 			session.save(c);

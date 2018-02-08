@@ -138,7 +138,7 @@ public class ExcelUploader {
 			else
 			{
 				Contact contact = new Contact();
-				contact.setCareUser(cu);
+				contact.setUploadedBy(cu);
 				contact.setContactNumber(mobileNum);
 				Timestamp uploadedAt = new Timestamp(System.currentTimeMillis());
 				contact.setUploadedAt(uploadedAt );

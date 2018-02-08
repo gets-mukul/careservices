@@ -26,41 +26,41 @@ public class ContactRestApi {
 	@Produces("application/json")
 	public Response contact() {
 		ContactDAO c = new ContactDAO();
-		JSONArray ja = new JSONArray();
-		JSONObject obj = new JSONObject();
+		JSONArray jsonArray = new JSONArray();
+		JSONObject jsonObj = new JSONObject();
 		List<Contact> clist = c.findAll();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
 		for (Contact contact : clist) {
 			
-			JSONArray a = new JSONArray();
+			JSONArray JsonArray2 = new JSONArray();
 				
-			a.put(contact.getId());
-			a.put(contact.getContactNumber());
-			a.put(sdf.format(contact.getUploadedAt()));
-			a.put(contact.getCareUser().getName());
+			JsonArray2.put(contact.getId());
+			JsonArray2.put(contact.getContactNumber());
+			JsonArray2.put(sdf.format(contact.getUploadedAt()));
+			JsonArray2.put(contact.getUploadedBy().getName());
 			String contactName = "NA";
 			if(contact.getContactName()!=null)
 			{
 				contactName = contact.getContactName();
 			}
-			a.put(contactName);
+			JsonArray2.put(contactName);
 			String location = "NA";
 			if(contact.getContactLocation()!=null)
 			{
 				location = contact.getContactLocation();
 			}
-			a.put(location);
+			JsonArray2.put(location);
 			String assignedTo = "Not Assigned";
 			if(contact.getEmployeeTasks().size()>0)
 			{
-				assignedTo = contact.getEmployeeTasks().iterator().next().getCareUser().getName();
+				assignedTo = contact.getEmployeeTasks().iterator().next().getActor().getName();
 			}
-			a.put(assignedTo);	
-			ja.put(a);
+			JsonArray2.put(assignedTo);	
+			jsonArray.put(JsonArray2);
 			
 		}
-		obj.put("data", ja);
-		return Response.status(200).entity(obj.toString()).build();
+		jsonObj.put("data", jsonArray);
+		return Response.status(200).entity(jsonObj.toString()).build();
 	}
 
 }

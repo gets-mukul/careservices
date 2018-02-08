@@ -2,14 +2,19 @@ package com.careservices.dao;
 
 import java.sql.Time;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -17,82 +22,75 @@ import org.hibernate.annotations.GenericGenerator;
  * ClientTrail entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "client_trail", schema = "public", uniqueConstraints = @UniqueConstraint(columnNames = "client_mobile"))
+@Table(name = "client_trail", schema = "public")
 
 public class ClientTrail extends BaseHibernateDAO implements java.io.Serializable {
 
 	// Fields
+	private Contact relatedContact;//contact which agree for demo
 
 	private Integer id;
-	private Long buy;
-	private Integer clientMobile;
-	private String clientName;
-	private Date endDate;
-	private Date expiryDate;
-	private String long_;
-	private String lotSize;
-	private String script;
-	private String segment;
-	private Long sell;
-	private String short_;
-	private Date startDate;
-	private String status;
-	private Integer stopLoss;
-	private String strikePrice;
-	private Integer target1;
-	private Integer target2;
+	private Date trailStartDate;
+	private Date trailEndDate;
 	private Time time;
+	private String secrip;
+	private String longShort;
+	private String segment;
+	private Date expityDate;
+	private Double strikePrice;
+	private Integer lotSizeQty;
+	private Long buySell;
+	private Integer firstTarget;
+	private Integer secondTarget;
+	private Integer stopLoss;
+	private String status;
+	
 
 	// Constructors
+
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "contact_id", nullable = false)
+	
+	public Contact getRelatedContact() {
+		return relatedContact;
+	}
+
+	public void setRelatedContact(Contact relatedContact) {
+		this.relatedContact = relatedContact;
+	}
 
 	/** default constructor */
 	public ClientTrail() {
 	}
 
+	
+
 	/** minimal constructor */
-	public ClientTrail(Integer id, Integer clientMobile, String clientName, Date endDate, Date expiryDate,
-			String lotSize, String script, String segment, Date startDate, String status, Integer stopLoss,
-			String strikePrice, Integer target1, Integer target2, Time time) {
+	public ClientTrail(Integer id) {
 		this.id = id;
-		this.clientMobile = clientMobile;
-		this.clientName = clientName;
-		this.endDate = endDate;
-		this.expiryDate = expiryDate;
-		this.lotSize = lotSize;
-		this.script = script;
-		this.segment = segment;
-		this.startDate = startDate;
-		this.status = status;
-		this.stopLoss = stopLoss;
-		this.strikePrice = strikePrice;
-		this.target1 = target1;
-		this.target2 = target2;
-		this.time = time;
 	}
 
 	/** full constructor */
-	public ClientTrail(Integer id, Long buy, Integer clientMobile, String clientName, Date endDate, Date expiryDate,
-			String long_, String lotSize, String script, String segment, Long sell, String short_, Date startDate,
-			String status, Integer stopLoss, String strikePrice, Integer target1, Integer target2, Time time) {
+	public ClientTrail(Integer id, String clientName, Long mobile, Date trailStartDate, Date trailEndDate, Time time,
+			String secrip, String longShort, String segment, Date expityDate, Double strikePrice, Integer lotSizeQty,
+			Long buySell, Integer firstTarget, Integer secondTarget, Integer stopLoss, String status) {
+
 		this.id = id;
-		this.buy = buy;
-		this.clientMobile = clientMobile;
-		this.clientName = clientName;
-		this.endDate = endDate;
-		this.expiryDate = expiryDate;
-		this.long_ = long_;
-		this.lotSize = lotSize;
-		this.script = script;
-		this.segment = segment;
-		this.sell = sell;
-		this.short_ = short_;
-		this.startDate = startDate;
-		this.status = status;
-		this.stopLoss = stopLoss;
-		this.strikePrice = strikePrice;
-		this.target1 = target1;
-		this.target2 = target2;
+
+		this.trailStartDate = trailStartDate;
+		this.trailEndDate = trailEndDate;
 		this.time = time;
+		this.secrip = secrip;
+		this.longShort = longShort;
+		this.segment = segment;
+		this.expityDate = expityDate;
+		this.strikePrice = strikePrice;
+		this.buySell = buySell;
+		this.firstTarget = firstTarget;
+		this.secondTarget = secondTarget;
+		this.stopLoss = stopLoss;
+		this.status = status;
 	}
 
 	// Property accessors
@@ -100,6 +98,7 @@ public class ClientTrail extends BaseHibernateDAO implements java.io.Serializabl
 	@Id
 	@GeneratedValue(generator = "generator")
 	@Column(name = "id", unique = true, nullable = false)
+
 	public Integer getId() {
 		return this.id;
 	}
@@ -108,89 +107,59 @@ public class ClientTrail extends BaseHibernateDAO implements java.io.Serializabl
 		this.id = id;
 	}
 
-	@Column(name = "buy")
+	@Temporal(TemporalType.DATE)
+	@Column(name = "trail_start_date", length = 13)
 
-	public Long getBuy() {
-		return this.buy;
+	public Date getTrailStartDate() {
+		return this.trailStartDate;
 	}
 
-	public void setBuy(Long buy) {
-		this.buy = buy;
-	}
-
-	@Column(name = "client_mobile", unique = true, nullable = false)
-
-	public Integer getClientMobile() {
-		return this.clientMobile;
-	}
-
-	public void setClientMobile(Integer clientMobile) {
-		this.clientMobile = clientMobile;
-	}
-
-	@Column(name = "client_name", nullable = false)
-
-	public String getClientName() {
-		return this.clientName;
-	}
-
-	public void setClientName(String clientName) {
-		this.clientName = clientName;
+	public void setTrailStartDate(Date trailStartDate) {
+		this.trailStartDate = trailStartDate;
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "end_date", nullable = false, length = 13)
+	@Column(name = "trail_end_date", length = 13)
 
-	public Date getEndDate() {
-		return this.endDate;
+	public Date getTrailEndDate() {
+		return this.trailEndDate;
 	}
 
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
+	public void setTrailEndDate(Date trailEndDate) {
+		this.trailEndDate = trailEndDate;
 	}
 
-	@Temporal(TemporalType.DATE)
-	@Column(name = "expiry_date", nullable = false, length = 13)
+	@Column(name = "time", length = 15)
 
-	public Date getExpiryDate() {
-		return this.expiryDate;
+	public Time getTime() {
+		return this.time;
 	}
 
-	public void setExpiryDate(Date expiryDate) {
-		this.expiryDate = expiryDate;
+	public void setTime(Time time) {
+		this.time = time;
 	}
 
-	@Column(name = "long")
+	@Column(name = "secrip")
 
-	public String getLong_() {
-		return this.long_;
+	public String getSecrip() {
+		return this.secrip;
 	}
 
-	public void setLong_(String long_) {
-		this.long_ = long_;
+	public void setSecrip(String secrip) {
+		this.secrip = secrip;
 	}
 
-	@Column(name = "lot_size", nullable = false)
+	@Column(name = "long_short")
 
-	public String getLotSize() {
-		return this.lotSize;
+	public String getLongShort() {
+		return this.longShort;
 	}
 
-	public void setLotSize(String lotSize) {
-		this.lotSize = lotSize;
+	public void setLongShort(String longShort) {
+		this.longShort = longShort;
 	}
 
-	@Column(name = "script", nullable = false)
-
-	public String getScript() {
-		return this.script;
-	}
-
-	public void setScript(String script) {
-		this.script = script;
-	}
-
-	@Column(name = "segment", nullable = false)
+	@Column(name = "segment")
 
 	public String getSegment() {
 		return this.segment;
@@ -200,48 +169,68 @@ public class ClientTrail extends BaseHibernateDAO implements java.io.Serializabl
 		this.segment = segment;
 	}
 
-	@Column(name = "sell")
-
-	public Long getSell() {
-		return this.sell;
-	}
-
-	public void setSell(Long sell) {
-		this.sell = sell;
-	}
-
-	@Column(name = "short")
-
-	public String getShort_() {
-		return this.short_;
-	}
-
-	public void setShort_(String short_) {
-		this.short_ = short_;
-	}
-
 	@Temporal(TemporalType.DATE)
-	@Column(name = "start_date", nullable = false, length = 13)
+	@Column(name = "expity_date", length = 13)
 
-	public Date getStartDate() {
-		return this.startDate;
+	public Date getExpityDate() {
+		return this.expityDate;
 	}
 
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
+	public void setExpityDate(Date expityDate) {
+		this.expityDate = expityDate;
 	}
 
-	@Column(name = "status", nullable = false)
+	@Column(name = "strike_price", precision = 10)
 
-	public String getStatus() {
-		return this.status;
+	public Double getStrikePrice() {
+		return this.strikePrice;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
+	public void setStrikePrice(Double strikePrice) {
+		this.strikePrice = strikePrice;
 	}
 
-	@Column(name = "stop_loss", nullable = false)
+	@Column(name = "lot_size_qty")
+
+	public Integer getLotSizeQty() {
+		return this.lotSizeQty;
+	}
+
+	public void setLotSizeQty(Integer lotSizeQty) {
+		this.lotSizeQty = lotSizeQty;
+	}
+
+	@Column(name = "buy_sell")
+
+	public Long getBuySell() {
+		return this.buySell;
+	}
+
+	public void setBuySell(Long buySell) {
+		this.buySell = buySell;
+	}
+
+	@Column(name = "first_target")
+
+	public Integer getFirstTarget() {
+		return this.firstTarget;
+	}
+
+	public void setFirstTarget(Integer firstTarget) {
+		this.firstTarget = firstTarget;
+	}
+
+	@Column(name = "second_target")
+
+	public Integer getSecondTarget() {
+		return this.secondTarget;
+	}
+
+	public void setSecondTarget(Integer secondTarget) {
+		this.secondTarget = secondTarget;
+	}
+
+	@Column(name = "stop_loss")
 
 	public Integer getStopLoss() {
 		return this.stopLoss;
@@ -251,44 +240,14 @@ public class ClientTrail extends BaseHibernateDAO implements java.io.Serializabl
 		this.stopLoss = stopLoss;
 	}
 
-	@Column(name = "strike_price", nullable = false)
+	@Column(name = "status")
 
-	public String getStrikePrice() {
-		return this.strikePrice;
+	public String getStatus() {
+		return this.status;
 	}
 
-	public void setStrikePrice(String strikePrice) {
-		this.strikePrice = strikePrice;
-	}
-
-	@Column(name = "target_1", nullable = false)
-
-	public Integer getTarget1() {
-		return this.target1;
-	}
-
-	public void setTarget1(Integer target1) {
-		this.target1 = target1;
-	}
-
-	@Column(name = "target_2", nullable = false)
-
-	public Integer getTarget2() {
-		return this.target2;
-	}
-
-	public void setTarget2(Integer target2) {
-		this.target2 = target2;
-	}
-
-	@Column(name = "time", nullable = false, length = 15)
-
-	public Time getTime() {
-		return this.time;
-	}
-
-	public void setTime(Time time) {
-		this.time = time;
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 }

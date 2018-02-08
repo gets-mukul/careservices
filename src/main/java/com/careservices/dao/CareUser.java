@@ -32,10 +32,12 @@ public class CareUser extends BaseHibernateDAO implements java.io.Serializable {
 	private String name;
 	private String password;
 	private String userType;
-	private Set<Contact> contacts = new HashSet<Contact>(0);
-	private Set<EmployeeTask> employeeTasks = new HashSet<EmployeeTask>(0);
-	private String imageUrl;
 	
+	private Set<Contact> uploadedContacts = new HashSet<Contact>(0);//
+	private Set<EmployeeTask> employeeTasks = new HashSet<EmployeeTask>(0);// tasks for any particular employee
+	private Set<EmployeeTask> employeeTasksByAdmin = new HashSet<EmployeeTask>(0);//tasks assign by admin
+	
+	private String imageUrl;
 
 	// Constructors
 
@@ -63,7 +65,7 @@ public class CareUser extends BaseHibernateDAO implements java.io.Serializable {
 		this.name = name;
 		this.password = password;
 		this.userType = userType;
-		this.contacts = contacts;
+		this.uploadedContacts = contacts;
 		this.employeeTasks = employeeTasks;
 	}
 
@@ -142,15 +144,15 @@ public class CareUser extends BaseHibernateDAO implements java.io.Serializable {
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "careUser")
 
-	public Set<Contact> getContacts() {
-		return this.contacts;
+	public Set<Contact> getUploadedContacts() {
+		return uploadedContacts;
 	}
 
-	public void setContacts(Set<Contact> contacts) {
-		this.contacts = contacts;
+	public void setUploadedContacts(Set<Contact> uploadedContacts) {
+		this.uploadedContacts = uploadedContacts;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "careUser")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "actor")
 
 	public Set<EmployeeTask> getEmployeeTasks() {
 		return this.employeeTasks;
@@ -159,14 +161,23 @@ public class CareUser extends BaseHibernateDAO implements java.io.Serializable {
 	public void setEmployeeTasks(Set<EmployeeTask> employeeTasks) {
 		this.employeeTasks = employeeTasks;
 	}
-	
-	@Column(name="image_url", nullable=true)
+
+	@Column(name = "image_url", nullable = true)
 	public String getImageUrl() {
 		return imageUrl;
 	}
 
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "createdBy")
+	public Set<EmployeeTask> getEmployeeTasksByAdmin() {
+		return employeeTasksByAdmin;
+	}
+
+	public void setEmployeeTasksByAdmin(Set<EmployeeTask> employeeTasksByAdmin) {
+		this.employeeTasksByAdmin = employeeTasksByAdmin;
 	}
 
 }

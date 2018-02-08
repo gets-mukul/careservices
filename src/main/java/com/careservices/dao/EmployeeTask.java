@@ -1,5 +1,7 @@
 package com.careservices.dao;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -22,12 +24,15 @@ public class EmployeeTask extends BaseHibernateDAO implements java.io.Serializab
 	// Fields
 
 	private Integer id;
-	private CareUser careUser;
+	private CareUser actor;
 	private Contact contact;
 	private String paymentAmount;
 	private String paymentId;
 	private String paymentType;
 	private String status;
+	private Timestamp createdAt;
+
+	private CareUser createdBy;
 
 	// Constructors
 
@@ -38,7 +43,7 @@ public class EmployeeTask extends BaseHibernateDAO implements java.io.Serializab
 	/** minimal constructor */
 	public EmployeeTask(Integer id, CareUser careUser, Contact contact) {
 		this.id = id;
-		this.careUser = careUser;
+		this.actor = careUser;
 		this.contact = contact;
 	}
 
@@ -46,7 +51,7 @@ public class EmployeeTask extends BaseHibernateDAO implements java.io.Serializab
 	public EmployeeTask(Integer id, CareUser careUser, Contact contact, String paymentAmount, String paymentId,
 			String paymentType, String status) {
 		this.id = id;
-		this.careUser = careUser;
+		this.actor = careUser;
 		this.contact = contact;
 		this.paymentAmount = paymentAmount;
 		this.paymentId = paymentId;
@@ -71,12 +76,12 @@ public class EmployeeTask extends BaseHibernateDAO implements java.io.Serializab
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = false)
 
-	public CareUser getCareUser() {
-		return this.careUser;
+	public CareUser getActor() {
+		return actor;
 	}
 
-	public void setCareUser(CareUser careUser) {
-		this.careUser = careUser;
+	public void setActor(CareUser actor) {
+		this.actor = actor;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -85,6 +90,8 @@ public class EmployeeTask extends BaseHibernateDAO implements java.io.Serializab
 	public Contact getContact() {
 		return this.contact;
 	}
+
+	
 
 	public void setContact(Contact contact) {
 		this.contact = contact;
@@ -128,6 +135,25 @@ public class EmployeeTask extends BaseHibernateDAO implements java.io.Serializab
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	@Column(name = "created_at")
+	public Timestamp getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Timestamp createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "created_by", nullable = false)
+	public CareUser getcreatedBy() {
+		return createdBy;
+	}
+
+	public void setcreatedBy(CareUser createdBy) {
+		this.createdBy = createdBy;
 	}
 
 }

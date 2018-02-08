@@ -27,15 +27,19 @@ public class Contact extends BaseHibernateDAO implements java.io.Serializable {
 	// Fields
 
 	private Integer id;
-	private CareUser careUser;
+	private CareUser uploadedBy;//uploaded by
 	private String contactLocation;
 	private String contactName;
 	private Long contactNumber;
 	private Set<EmployeeTask> employeeTasks = new HashSet<EmployeeTask>(0);
 	private Timestamp uploadedAt;
-	
+	private Set<ClientTrail> relatedTrails; //kitne trail dia hai contact ko
 
 	// Constructors
+	
+	
+	
+	
 
 	/** default constructor */
 	public Contact() {
@@ -44,7 +48,7 @@ public class Contact extends BaseHibernateDAO implements java.io.Serializable {
 	/** minimal constructor */
 	public Contact(Integer id, CareUser careUser, Long contactNumber) {
 		this.id = id;
-		this.careUser = careUser;
+		this.uploadedBy = careUser;
 		this.contactNumber = contactNumber;
 	}
 
@@ -52,7 +56,7 @@ public class Contact extends BaseHibernateDAO implements java.io.Serializable {
 	public Contact(Integer id, CareUser careUser, String contactLocation, String contactName, Long contactNumber,
 			Set<EmployeeTask> employeeTasks) {
 		this.id = id;
-		this.careUser = careUser;
+		this.uploadedBy = careUser;
 		this.contactLocation = contactLocation;
 		this.contactName = contactName;
 		this.contactNumber = contactNumber;
@@ -60,6 +64,18 @@ public class Contact extends BaseHibernateDAO implements java.io.Serializable {
 	}
 
 	// Property accessors
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "relatedContact")
+	
+	public Set<ClientTrail> getRelatedTrails() {
+		return relatedTrails;
+	}
+
+	public void setRelatedTrails(Set<ClientTrail> relatedTrails) {
+		this.relatedTrails = relatedTrails;
+	}
+	
+	
 	@GenericGenerator(name = "generator", strategy = "increment")
 	@Id
 	@GeneratedValue(generator = "generator")
@@ -69,6 +85,8 @@ public class Contact extends BaseHibernateDAO implements java.io.Serializable {
 		return this.id;
 	}
 
+	
+
 	public void setId(Integer id) {
 		this.id = id;
 	}
@@ -76,13 +94,15 @@ public class Contact extends BaseHibernateDAO implements java.io.Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "uploaded_by", nullable = false)
 
-	public CareUser getCareUser() {
-		return this.careUser;
+	public CareUser getUploadedBy() {
+		return uploadedBy;
 	}
 
-	public void setCareUser(CareUser careUser) {
-		this.careUser = careUser;
+	public void setUploadedBy(CareUser uploadedBy) {
+		this.uploadedBy = uploadedBy;
 	}
+
+	
 
 	@Column(name = "contact_location")
 
@@ -90,6 +110,7 @@ public class Contact extends BaseHibernateDAO implements java.io.Serializable {
 		return this.contactLocation;
 	}
 
+	
 	public void setContactLocation(String contactLocation) {
 		this.contactLocation = contactLocation;
 	}
@@ -124,7 +145,7 @@ public class Contact extends BaseHibernateDAO implements java.io.Serializable {
 		this.employeeTasks = employeeTasks;
 	}
 
-	@Column(name="uploaded_at")
+	@Column(name = "uploaded_at")
 	public Timestamp getUploadedAt() {
 		return uploadedAt;
 	}

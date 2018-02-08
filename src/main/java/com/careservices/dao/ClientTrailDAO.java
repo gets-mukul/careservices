@@ -1,5 +1,6 @@
 package com.careservices.dao;
 
+
 import java.sql.Time;
 import java.util.Date;
 import java.util.List;
@@ -17,26 +18,24 @@ import org.slf4j.LoggerFactory;
  * transactions. Each of these methods provides additional information for how
  * to configure it for the desired type of transaction control.
  * 
- * @see careinvestmentservices.dao.ClientTrail
+ * @see com.careservices.dao.ClientTrail
  * @author MyEclipse Persistence Tools
  */
 public class ClientTrailDAO extends BaseHibernateDAO {
 	private static final Logger log = LoggerFactory.getLogger(ClientTrailDAO.class);
 	// property constants
-	public static final String BUY = "buy";
-	public static final String CLIENT_MOBILE = "clientMobile";
 	public static final String CLIENT_NAME = "clientName";
-	public static final String LONG_ = "long_";
-	public static final String LOT_SIZE = "lotSize";
-	public static final String SCRIPT = "script";
+	public static final String MOBILE = "mobile";
+	public static final String SECRIP = "secrip";
+	public static final String LONG_SHORT = "longShort";
 	public static final String SEGMENT = "segment";
-	public static final String SELL = "sell";
-	public static final String SHORT_ = "short_";
-	public static final String STATUS = "status";
-	public static final String STOP_LOSS = "stopLoss";
 	public static final String STRIKE_PRICE = "strikePrice";
-	public static final String TARGET1 = "target1";
-	public static final String TARGET2 = "target2";
+	public static final String LOT_SIZE_QTY = "lotSizeQty";
+	public static final String BUY_SELL = "buySell";
+	public static final String FIRST_TARGET = "firstTarget";
+	public static final String SECOND_TARGET = "secondTarget";
+	public static final String STOP_LOSS = "stopLoss";
+	public static final String STATUS = "status";
 
 	public void save(ClientTrail transientInstance) {
 		log.debug("saving ClientTrail instance");
@@ -63,7 +62,7 @@ public class ClientTrailDAO extends BaseHibernateDAO {
 	public ClientTrail findById(java.lang.Integer id) {
 		log.debug("getting ClientTrail instance with id: " + id);
 		try {
-			ClientTrail instance = (ClientTrail) getSession().get("careinvestmentservices.dao.ClientTrail", id);
+			ClientTrail instance = (ClientTrail) getSession().get("com.careservices.dao.ClientTrail", id);
 			return instance;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
@@ -75,7 +74,7 @@ public class ClientTrailDAO extends BaseHibernateDAO {
 		log.debug("finding ClientTrail instance by example");
 		try {
 			List<ClientTrail> results = (List<ClientTrail>) getSession()
-					.createCriteria("careinvestmentservices.dao.ClientTrail").add(create(instance)).list();
+					.createCriteria("com.careservices.dao.ClientTrail").add(create(instance)).list();
 			log.debug("find by example successful, result size: " + results.size());
 			return results;
 		} catch (RuntimeException re) {
@@ -97,60 +96,52 @@ public class ClientTrailDAO extends BaseHibernateDAO {
 		}
 	}
 
-	public List<ClientTrail> findByBuy(Object buy) {
-		return findByProperty(BUY, buy);
-	}
-
-	public List<ClientTrail> findByClientMobile(Object clientMobile) {
-		return findByProperty(CLIENT_MOBILE, clientMobile);
-	}
-
 	public List<ClientTrail> findByClientName(Object clientName) {
 		return findByProperty(CLIENT_NAME, clientName);
 	}
 
-	public List<ClientTrail> findByLong_(Object long_) {
-		return findByProperty(LONG_, long_);
+	public List<ClientTrail> findByMobile(Object mobile) {
+		return findByProperty(MOBILE, mobile);
 	}
 
-	public List<ClientTrail> findByLotSize(Object lotSize) {
-		return findByProperty(LOT_SIZE, lotSize);
+	public List<ClientTrail> findBySecrip(Object secrip) {
+		return findByProperty(SECRIP, secrip);
 	}
 
-	public List<ClientTrail> findByScript(Object script) {
-		return findByProperty(SCRIPT, script);
+	public List<ClientTrail> findByLongShort(Object longShort) {
+		return findByProperty(LONG_SHORT, longShort);
 	}
 
 	public List<ClientTrail> findBySegment(Object segment) {
 		return findByProperty(SEGMENT, segment);
 	}
 
-	public List<ClientTrail> findBySell(Object sell) {
-		return findByProperty(SELL, sell);
+	public List<ClientTrail> findByStrikePrice(Object strikePrice) {
+		return findByProperty(STRIKE_PRICE, strikePrice);
 	}
 
-	public List<ClientTrail> findByShort_(Object short_) {
-		return findByProperty(SHORT_, short_);
+	public List<ClientTrail> findByLotSizeQty(Object lotSizeQty) {
+		return findByProperty(LOT_SIZE_QTY, lotSizeQty);
 	}
 
-	public List<ClientTrail> findByStatus(Object status) {
-		return findByProperty(STATUS, status);
+	public List<ClientTrail> findByBuySell(Object buySell) {
+		return findByProperty(BUY_SELL, buySell);
+	}
+
+	public List<ClientTrail> findByFirstTarget(Object firstTarget) {
+		return findByProperty(FIRST_TARGET, firstTarget);
+	}
+
+	public List<ClientTrail> findBySecondTarget(Object secondTarget) {
+		return findByProperty(SECOND_TARGET, secondTarget);
 	}
 
 	public List<ClientTrail> findByStopLoss(Object stopLoss) {
 		return findByProperty(STOP_LOSS, stopLoss);
 	}
 
-	public List<ClientTrail> findByStrikePrice(Object strikePrice) {
-		return findByProperty(STRIKE_PRICE, strikePrice);
-	}
-
-	public List<ClientTrail> findByTarget1(Object target1) {
-		return findByProperty(TARGET1, target1);
-	}
-
-	public List<ClientTrail> findByTarget2(Object target2) {
-		return findByProperty(TARGET2, target2);
+	public List<ClientTrail> findByStatus(Object status) {
+		return findByProperty(STATUS, status);
 	}
 
 	public List findAll() {

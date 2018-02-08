@@ -30,6 +30,7 @@ public class RestEmployeeApi {
 	public Response getAllEmployeeTaskStatus()
 	{
 		JSONArray jArr = new JSONArray();
+		
 		CareUserDAO dao_obj = new CareUserDAO();
 		List<CareUser> cu = dao_obj.findAll();
 		
@@ -46,6 +47,7 @@ public class RestEmployeeApi {
 			j_obj.put("name", name);
 			j_obj.put("total_task", totalTask);
 			j_obj.put("pending_task", pendingTask);
+			j_obj.put("id", careUser.getId());
 			jArr.put(j_obj);
 		}
 		return Response.status(200).entity(jArr.toString()).build();
