@@ -142,7 +142,7 @@ public class CareUser extends BaseHibernateDAO implements java.io.Serializable {
 		this.userType = userType;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "careUser")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "uploadedBy")
 
 	public Set<Contact> getUploadedContacts() {
 		return uploadedContacts;
