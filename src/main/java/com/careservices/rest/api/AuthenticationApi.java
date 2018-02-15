@@ -41,10 +41,12 @@ public class AuthenticationApi {
 			if (user.getPassword().equals(password)) {
 				obj.put("message", AuthenticationConstants.SuccessfulLogin);
 				obj.put("status", true);
+				obj.put("userType", user.getUserType());
 				JSONObject userProfile = new JSONObject();
 				userProfile.put("id", user.getId());
 				userProfile.put("name", user.getName());
 				userProfile.put("image_url", user.getImageUrl());
+				userProfile.put("user_type", user.getUserType());
 				obj.put("user_profile", userProfile);
 				return Response.status(Status.OK).entity(obj.toString()).build();
 			} else {
