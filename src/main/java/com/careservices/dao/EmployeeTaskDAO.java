@@ -72,7 +72,7 @@ public class EmployeeTaskDAO extends BaseHibernateDAO {
 		}
 	}
 
-	public List findByProperty(String propertyName, Object value) {
+	public List<EmployeeTask> findByProperty(String propertyName, Object value) {
 		log.debug("finding EmployeeTask instance with property: " + propertyName + ", value: " + value);
 		try {
 			String queryString = "from EmployeeTask as model where model." + propertyName + "= ?";
@@ -101,7 +101,7 @@ public class EmployeeTaskDAO extends BaseHibernateDAO {
 		return findByProperty(STATUS, status);
 	}
 
-	public List findAll() {
+	public List<EmployeeTask> findAll() {
 		log.debug("finding all EmployeeTask instances");
 		try {
 			String queryString = "from EmployeeTask";

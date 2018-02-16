@@ -9,13 +9,17 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.json.JSONObject;
 
 import com.careservices.constants.AuthenticationConstants;
+import com.careservices.constants.CareUserTypes;
 import com.careservices.dao.CareUser;
 import com.careservices.dao.CareUserDAO;
 import com.careservices.dao.HibernateSessionFactory;
+import com.careservices.exceptions.CareException;
 
 /**
  * @author JARVIS
@@ -35,72 +39,84 @@ public class AuthenticationApi {
 		if (cu.size() == 0) {
 			obj.put("message", AuthenticationConstants.EmailNotFound);
 			obj.put("status", false);
-			return Response.status(Status.OK).entity(obj.toString()).build();
+			
 		} else if (cu.size() == 1) {
 			CareUser user = cu.get(0);
 			if (user.getPassword().equals(password)) {
 				obj.put("message", AuthenticationConstants.SuccessfulLogin);
 				obj.put("status", true);
-				obj.put("userType", user.getUserType());
 				JSONObject userProfile = new JSONObject();
 				userProfile.put("id", user.getId());
 				userProfile.put("name", user.getName());
 				userProfile.put("image_url", user.getImageUrl());
 				userProfile.put("user_type", user.getUserType());
 				obj.put("user_profile", userProfile);
-				return Response.status(Status.OK).entity(obj.toString()).build();
+				
 			} else {
 				obj.put("message", AuthenticationConstants.PasswordIncorrect);
 				obj.put("status", false);
-				return Response.status(Status.OK).entity(obj.toString()).build();
+				
 			}
 		} else {
 			obj.put("message", AuthenticationConstants.MoreThanOneUserWithSameEmail);
 			obj.put("status", false);
-			return Response.status(Status.OK).entity(obj.toString()).build();
+			
 		}
-
+		return Response.status(Status.OK).entity(obj.toString()).build();
 	}
 
 	@Path("/registration/{name}/{email}/{password}/{mobile}")
 	@GET
 	public Response registerUser(@PathParam("name") String name, @PathParam("email") String email,
-			@PathParam("password") String password, @PathParam("mobile") Integer mobile) {
+			@PathParam("password") String password, @PathParam("mobile") Long mobile) {
 
 		CareUserDAO dao = new CareUserDAO();
 		List<CareUser> cu = dao.findByEmail(email);
+		List<CareUser>careUserByMobile = dao.findByMobile(mobile);
 		JSONObject obj = new JSONObject();
-
 		if (cu.size() > 0) {
 			obj.put("message", AuthenticationConstants.UserAlreadyExist);
-			obj.put("status", false);
-			return Response.status(Status.OK).entity(obj.toString()).build();
-		} else {
-
-			
+			obj.put("status", false);			
+		} 
+		else if (careUserByMobile.size()>0)
+		{
+			obj.put("message", AuthenticationConstants.MobileAlreadyExist);
+			obj.put("status", false);			
+		}
+		else {			
 			Session session = HibernateSessionFactory.getSession();;
-			session.beginTransaction();
-			
+			session.beginTransaction();			
 			CareUser careObj = new CareUser();
 			careObj.setName(name);
 			careObj.setEmail(email);
 			careObj.setPassword(password);
-			careObj.setMobile((long) mobile);
-			careObj.setUserType(AuthenticationConstants.Employee);
+			careObj.setMobile(mobile);
+			careObj.setUserType(CareUserTypes.employee);
 			
-			session.save(careObj);
-			session.getTransaction().commit();
-			session.close();
-	
+			Transaction orgTransaction = null;
+			try {
+				orgTransaction = session.beginTransaction();
+				session.save(careObj);
+				orgTransaction.commit();
+			} catch (HibernateException e) {
+				e.printStackTrace();
+				if (orgTransaction != null)
+					orgTransaction.rollback();
+				return new CareException(AuthenticationConstants.SomeThingWentWrongInSavingCareUser).getMessageAsResponse();	
+			} catch (Exception e) {
+				e.printStackTrace();
+				if (orgTransaction != null)
+					orgTransaction.rollback();
+				return new CareException(e.getMessage().toString()).getMessageAsResponse();
+			}
+			finally {
+				session.close();
+			}
 			obj.put("message", AuthenticationConstants.NewUserCreated);
-			obj.put("status", true);
-			return Response.status(Status.OK).entity(obj.toString()).build();
+			obj.put("status", true);			
 		}
 
-		// emailvalidation
-		// if email is unique
-		// create careuser
-		// if no error then message
+		return Response.status(Status.OK).entity(obj.toString()).build();
 		
 	}
 

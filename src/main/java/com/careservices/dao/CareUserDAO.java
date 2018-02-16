@@ -113,7 +113,7 @@ public class CareUserDAO extends BaseHibernateDAO {
 		return findByProperty(USER_TYPE, userType);
 	}
 
-	public List findAll() {
+	public List<CareUser> findAll() {
 		log.debug("finding all CareUser instances");
 		try {
 			String queryString = "from CareUser";

@@ -5,7 +5,6 @@ package com.careservices.rest.api;
 
 import java.util.List;
 
-import javax.json.stream.JsonParser;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -17,11 +16,14 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.JSONString;
 
+import com.careservices.constants.AuthenticationConstants;
+import com.careservices.constants.CareUserTypes;
+import com.careservices.constants.EmployeementManagementConstants;
 import com.careservices.dao.CareUser;
 import com.careservices.dao.CareUserDAO;
 import com.careservices.dao.HibernateSessionFactory;
+import com.careservices.exceptions.CareException;
 
 /**
  * @author JARVIS
@@ -29,17 +31,19 @@ import com.careservices.dao.HibernateSessionFactory;
  */
 @Path("/employee")
 public class EmployeeManagementApi {
+	
+	
+	
 	@Path("/list")
 	@GET
 	@Produces("application/json")
-
 	public Response showUserlist() {
 
 		JSONArray jsonArray = new JSONArray();
 		CareUserDAO daoObj = new CareUserDAO();
 		List<CareUser> cu = daoObj.findAll();
 		for (CareUser careUser : cu) {
-
+			if(!careUser.getUserType().equalsIgnoreCase(CareUserTypes.client)) {
 			JSONObject jsonObj = new JSONObject();
 			jsonObj.put("id", careUser.getId());
 			jsonObj.put("name", careUser.getName());
@@ -47,6 +51,7 @@ public class EmployeeManagementApi {
 			jsonObj.put("mobile", careUser.getMobile());
 			jsonObj.put("user_type", careUser.getUserType());
 			jsonArray.put(jsonObj);
+			}
 		}
 
 		return Response.status(200).entity(jsonArray.toString()).build();
@@ -61,11 +66,8 @@ public class EmployeeManagementApi {
 		
 		
 		Session session = HibernateSessionFactory.getSession();
-
-		CareUser cu = new CareUserDAO().findById(id);
-		
-		cu.setUserType(userType);
-		
+		CareUser cu = new CareUserDAO().findById(id);		
+		cu.setUserType(userType);		
 		Transaction orgTransaction = null;
 		try {
 			orgTransaction = session.beginTransaction();
@@ -73,14 +75,13 @@ public class EmployeeManagementApi {
 			orgTransaction.commit();
 		} catch (HibernateException e) {
 			e.printStackTrace();
-		}
-		JSONObject jsonObj = new JSONObject();
-		jsonObj.put("id", id);
-		jsonObj.put("user_type", userType);
-		
-		
-		return Response.status(200).entity(jsonObj.toString()).build();
-		
+			orgTransaction.rollback();
+			return new CareException(EmployeementManagementConstants.SomethingWentWrongInChangingUserType).getMessageAsResponse();
+		}		
+		JSONObject obj = new JSONObject();
+		obj.put("status", true);
+		obj.put("message", EmployeementManagementConstants.UserTypeChangedSuccessfully);
+		return Response.status(200).entity(obj.toString()).build();		
 	}
 
 }
