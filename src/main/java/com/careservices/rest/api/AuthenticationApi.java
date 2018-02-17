@@ -62,7 +62,7 @@ public class AuthenticationApi {
 			obj.put("status", false);
 			
 		}
-		return Response.status(Status.OK).entity(obj.toString()).build();
+		return Response.status(Status.OK).entity(obj.toString()).header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();
 	}
 
 	@Path("/registration/{name}/{email}/{password}/{mobile}")
@@ -124,7 +124,7 @@ public class AuthenticationApi {
 			obj.put("status", true);			
 		}
 
-		return Response.status(Status.OK).entity(obj.toString()).build();
+		return Response.status(Status.OK).entity(obj.toString()).header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();
 		
 	}
 

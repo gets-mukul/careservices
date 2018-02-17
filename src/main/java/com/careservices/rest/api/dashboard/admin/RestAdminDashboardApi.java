@@ -72,7 +72,7 @@ public class RestAdminDashboardApi {
 		obj.put("TRIAL",onTrialTasks);
 		obj.put("NOT_TRADE",notTrade);
 		obj.put("OTHERS",others);		
-		return Response.status(200).entity(obj.toString()).build();
+		return Response.status(200).entity(obj.toString()).header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();
 	}
 	
 	
@@ -171,7 +171,7 @@ public class RestAdminDashboardApi {
 		JSONObject obj = new JSONObject();
 		
 		obj.put("data", array);
-		return Response.status(200).entity(obj.toString()).build();
+		return Response.status(200).entity(obj.toString()).header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();
 	}
 	
 	@Path("/employee_list")
@@ -189,7 +189,7 @@ public class RestAdminDashboardApi {
 				sb.append(option);
 			}
 		}	
-		return Response.status(200).entity(sb.toString()).build();
+		return Response.status(200).entity(sb.toString()).header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();
 	}
 	
 }

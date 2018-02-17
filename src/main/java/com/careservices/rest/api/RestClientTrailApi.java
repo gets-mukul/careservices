@@ -116,7 +116,7 @@ public class RestClientTrailApi {
 		}
 		
 
-		return Response.status(200).entity(jsonArray).build();
+		return Response.status(200).entity(jsonArray).header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();
 	}
 
 }

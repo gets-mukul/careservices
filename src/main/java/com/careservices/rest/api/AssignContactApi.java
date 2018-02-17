@@ -68,7 +68,7 @@ public class AssignContactApi {
 		jsonObj.put("employee name", user.getName());
 		jsonObj.put("contact Id", jsonArray);
 
-		return Response.status(200).entity(jsonObj.toString()).build();
+		return Response.status(200).entity(jsonObj.toString()).header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();
 
 	}
 

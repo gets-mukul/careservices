@@ -28,6 +28,6 @@ public class CareException extends Exception {
 		JSONObject obj = new JSONObject();
 		obj.put("message", message);
 		obj.put("status", false);	
-		return Response.status(Status.OK).entity(obj.toString()).build();
+		return Response.status(Status.OK).entity(obj.toString()).header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();
 	}
 }

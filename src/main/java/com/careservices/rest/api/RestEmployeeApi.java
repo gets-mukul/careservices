@@ -50,6 +50,6 @@ public class RestEmployeeApi {
 			j_obj.put("id", careUser.getId());
 			jArr.put(j_obj);
 		}
-		return Response.status(200).entity(jArr.toString()).build();
+		return Response.status(200).entity(jArr.toString()).header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();
 	}
 }

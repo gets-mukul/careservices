@@ -54,7 +54,7 @@ public class EmployeeManagementApi {
 			}
 		}
 
-		return Response.status(200).entity(jsonArray.toString()).build();
+		return Response.status(200).entity(jsonArray.toString()).header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();
 
 	}
 	
@@ -81,7 +81,7 @@ public class EmployeeManagementApi {
 		JSONObject obj = new JSONObject();
 		obj.put("status", true);
 		obj.put("message", EmployeementManagementConstants.UserTypeChangedSuccessfully);
-		return Response.status(200).entity(obj.toString()).build();		
+		return Response.status(200).entity(obj.toString()).header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();		
 	}
 
 }

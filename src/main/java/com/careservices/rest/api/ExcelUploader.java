@@ -107,7 +107,7 @@ public class ExcelUploader {
 
 
 
-		return Response.status(200).entity("file uploaded").build();
+		return Response.status(200).entity("file uploaded").header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();
 	}
 
 	private void insertContactInDB(String mobile, Integer userId) {
