@@ -98,6 +98,8 @@ public class AuthenticationApi {
 				orgTransaction = session.beginTransaction();
 				session.save(careObj);
 				orgTransaction.commit();
+				while (!orgTransaction.wasCommitted())
+		            ;
 			} catch (HibernateException e) {
 				e.printStackTrace();
 				if (orgTransaction != null)
@@ -110,7 +112,7 @@ public class AuthenticationApi {
 				return new CareException(e.getMessage().toString()).getMessageAsResponse();
 			}
 			finally {
-				session.close();
+				HibernateSessionFactory.getSession().close();
 			}
 			obj.put("message", AuthenticationConstants.NewUserCreated);
 			obj.put("status", true);			
