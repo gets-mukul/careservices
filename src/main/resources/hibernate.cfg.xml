@@ -9,7 +9,7 @@
 		<property name="dialect">org.hibernate.dialect.DerbyDialect</property>
 		<property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
 		<property name="hibernate.connection.password">61f44fb6e8f704af45d1ffd553f08ea795b207009f70b4645e1bc4e5cb307570</property>
-		<property name="hibernate.connection.url">postgres://cjkknvvpdwpgji:61f44fb6e8f704af45d1ffd553f08ea795b207009f70b4645e1bc4e5cb307570@ec2-54-221-234-62.compute-1.amazonaws.com:5432/d48jh4564gl568</property>
+		<property name="hibernate.connection.url">jdbc:postgresql://ec2-54-221-234-62.compute-1.amazonaws.com:5432/d48jh4564gl568</property>
 		<property name="hibernate.connection.username">cjkknvvpdwpgji</property>
 		<property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
 		<property name="hbm2ddl.auto">update</property>
