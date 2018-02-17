@@ -94,8 +94,14 @@ public class AuthenticationApi {
 			careObj.setUserType(CareUserTypes.employee);
 			
 			Transaction orgTransaction = null;
+			 if (session.getTransaction() != null
+			            && session.getTransaction().isActive()) {
+				 orgTransaction = session.getTransaction();
+			    } else {
+			    	orgTransaction = session.beginTransaction();
+			    }
 			try {
-				orgTransaction = session.beginTransaction();
+				
 				session.save(careObj);
 				orgTransaction.commit();
 				while (!orgTransaction.wasCommitted())
