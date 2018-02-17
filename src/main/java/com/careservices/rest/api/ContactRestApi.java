@@ -21,10 +21,10 @@ import com.careservices.dao.ContactDAO;
  */
 @Path("/abc")
 public class ContactRestApi {
-	@Path("/contact")
+	@Path("/unassigned_contact")
 	@GET
 	@Produces("application/json")
-	public Response contact() {
+	public Response unAssignedContact() {
 		ContactDAO c = new ContactDAO();
 		JSONArray jsonArray = new JSONArray();
 		JSONObject jsonObj = new JSONObject();
@@ -32,35 +32,82 @@ public class ContactRestApi {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
 		for (Contact contact : clist) {
 			
-			JSONArray JsonArray2 = new JSONArray();
+			if(contact.getEmployeeTasks().size()==0)
+			{
+				JSONArray JsonArray2 = new JSONArray();
 				
-			JsonArray2.put(contact.getId());
-			JsonArray2.put(contact.getContactNumber());
-			JsonArray2.put(sdf.format(contact.getUploadedAt()));
-			JsonArray2.put(contact.getUploadedBy().getName());
-			String contactName = "NA";
-			if(contact.getContactName()!=null)
-			{
-				contactName = contact.getContactName();
+				JsonArray2.put(contact.getId());
+				JsonArray2.put(contact.getContactNumber());
+				JsonArray2.put(sdf.format(contact.getUploadedAt()));
+				JsonArray2.put(contact.getUploadedBy().getName());
+				String contactName = "NA";
+				if(contact.getContactName()!=null)
+				{
+					contactName = contact.getContactName();
+				}
+				JsonArray2.put(contactName);
+				String location = "NA";
+				if(contact.getContactLocation()!=null)
+				{
+					location = contact.getContactLocation();
+				}
+				JsonArray2.put(location);
+				String assignedTo = "";
+				if(contact.getEmployeeTasks().size()>0)
+				{
+					assignedTo = contact.getEmployeeTasks().iterator().next().getActor().getName();
+				}
+				JsonArray2.put(assignedTo);	
+				jsonArray.put(JsonArray2);
 			}
-			JsonArray2.put(contactName);
-			String location = "NA";
-			if(contact.getContactLocation()!=null)
-			{
-				location = contact.getContactLocation();
-			}
-			JsonArray2.put(location);
-			String assignedTo = "Not Assigned";
-			if(contact.getEmployeeTasks().size()>0)
-			{
-				assignedTo = contact.getEmployeeTasks().iterator().next().getActor().getName();
-			}
-			JsonArray2.put(assignedTo);	
-			jsonArray.put(JsonArray2);
-			
+		
 		}
 		jsonObj.put("data", jsonArray);
 		return Response.status(200).entity(jsonObj.toString()).build();
 	}
 
+	@Path("/assigned_contact")
+	@GET
+	@Produces("application/json")
+	public Response contactAssigned() {
+		ContactDAO c = new ContactDAO();
+		JSONArray jsonArray = new JSONArray();
+		JSONObject jsonObj = new JSONObject();
+		List<Contact> clist = c.findAll();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
+		for (Contact contact : clist) {
+			
+			if(contact.getEmployeeTasks().size()>0)
+			{
+				JSONArray JsonArray2 = new JSONArray();
+				
+				JsonArray2.put(contact.getId());
+				JsonArray2.put(contact.getContactNumber());
+				JsonArray2.put(sdf.format(contact.getUploadedAt()));
+				JsonArray2.put(contact.getUploadedBy().getName());
+				String contactName = "NA";
+				if(contact.getContactName()!=null)
+				{
+					contactName = contact.getContactName();
+				}
+				JsonArray2.put(contactName);
+				String location = "NA";
+				if(contact.getContactLocation()!=null)
+				{
+					location = contact.getContactLocation();
+				}
+				JsonArray2.put(location);
+				String assignedTo = "";
+				if(contact.getEmployeeTasks().size()>0)
+				{
+					assignedTo = contact.getEmployeeTasks().iterator().next().getActor().getName();
+				}
+				JsonArray2.put(assignedTo);	
+				jsonArray.put(JsonArray2);
+			}
+		
+		}
+		jsonObj.put("data", jsonArray);
+		return Response.status(200).entity(jsonObj.toString()).build();
+	}
 }

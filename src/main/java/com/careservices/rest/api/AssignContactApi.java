@@ -51,7 +51,7 @@ public class AssignContactApi {
 			EmployeeTask empTask = new EmployeeTask();
 			empTask.setContact(c);
 			empTask.setcreatedBy(admin);
-			empTask.setcreatedBy(user);
+			empTask.setActor(user);
 			empTask.setStatus("INCOMPLETE");
 			Transaction orgTransaction = null;
 			try {

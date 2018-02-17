@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.careservices.constants.TaskStatusConstants;
 import com.careservices.dao.CareUser;
 import com.careservices.dao.CareUserDAO;
 import com.careservices.dao.Contact;
@@ -27,35 +28,29 @@ import com.careservices.dao.EmployeeTaskDAO;
 @Path("/employee")
 public class EmployeeRestApi {
 	@GET
-	@Path("/work/{empl_id}")
+	@Path("/incomplete/{empl_id}")
 	@Produces("application/json")
 	public Response employeeWorkDone (@PathParam ("empl_id") Integer emplId) {
-		String name = "NA";
-		String location = "NA";
-		Long number = null;
-		String status = "NA";
+		
 		JSONObject jsonObj = new JSONObject();
 		JSONArray jsonArray = new JSONArray();
 		CareUser cu = new CareUserDAO().findById(emplId);		
 		Set<EmployeeTask> emplTask = cu.getEmployeeTasks();		
 		for (EmployeeTask employeeTask : emplTask) {
+			Long number = null;
+			
+			if(employeeTask.getStatus().equalsIgnoreCase(TaskStatusConstants.INCOMPLETE))
+			{
 				
-			if(employeeTask.getContact().getContactName()!=null) {
-				name = employeeTask.getContact().getContactName();
+				number = employeeTask.getContact().getContactNumber();
+				
+				JSONArray jsonArray2  = new JSONArray();
+				jsonArray2.put(number);
+				jsonArray2.put(employeeTask.getCreatedAt());	
+				jsonArray2.put(employeeTask.getId());	
+				jsonArray.put(jsonArray2);
 			}
 			
-			if(employeeTask.getContact().getContactLocation()!=null) {
-				location = employeeTask.getContact().getContactLocation();
-			}
-			number = employeeTask.getContact().getContactNumber();
-			status = employeeTask.getStatus();
-			JSONArray jsonArray2  = new JSONArray();
-			jsonArray2.put(number);
-			jsonArray2.put(status);
-			jsonArray2.put(name);
-			jsonArray2.put(location);
-			
-			jsonArray.put(jsonArray2);
 		}
 		jsonObj.put("data", jsonArray);
 		return Response.status(200).entity(jsonObj.toString()).build();

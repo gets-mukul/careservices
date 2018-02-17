@@ -3,6 +3,7 @@
  */
 package com.careservices.rest.api.dashboard.admin;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -11,6 +12,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -80,6 +82,8 @@ public class RestAdminDashboardApi {
 	public Response getContactSummaryReport(@PathParam("start_date") String startDate, @PathParam("end_date") String endDate, 
 			@PathParam("employee_ids")String userIds)
 	{
+		
+		
 		String hql =""
 				+ "select  care_user.id , "
 				+ "care_user.name, "
@@ -94,11 +98,11 @@ public class RestAdminDashboardApi {
 				+ "left JOIN employee_task ON (care_user.id = employee_task.user_id) ";
 		
 		
-		if(startDate!=null || endDate!=null || userIds!=null)
+		if((startDate!=null && !startDate.equalsIgnoreCase("null")) || (endDate!=null && !endDate.equalsIgnoreCase("null")) || (userIds!=null && !userIds.equalsIgnoreCase("null")))
 		{
 			hql+= " where";
 			boolean prevFound = false;
-			if(startDate!=null)
+			if(startDate!=null && !startDate.equalsIgnoreCase("null"))
 			{
 				
 				if(prevFound)
@@ -106,10 +110,10 @@ public class RestAdminDashboardApi {
 					hql+=" and";
 					
 				}
-				hql+="  employee_task.created_at >=cast ('"+startDate+"' as timestamp)";
+				hql+="  employee_task.created_at >=cast ('"+startDate+" 00:00:01' as timestamp)";
 				prevFound=true;
 			}
-			if(endDate!=null)
+			if(endDate!=null && !endDate.equalsIgnoreCase("null"))
 			{
 				
 				if(prevFound)
@@ -117,17 +121,17 @@ public class RestAdminDashboardApi {
 					hql+=" and";
 					
 				}
-				hql+="  employee_task.created_at <="+endDate;
+				hql+="  employee_task.created_at <=cast ('"+endDate+" 23:59:59' as timestamp)";
 				prevFound=true;
 			}
-			if(userIds!=null)
+			if(userIds!=null && !userIds.equalsIgnoreCase("null"))
 			{
 				if(prevFound)
 				{
 					hql+=" and";
 					
 				}
-				hql+=" and care_user.id in ("+userIds+")";
+				hql+=" care_user.id in ("+userIds+")";
 				prevFound=true;
 			}
 		}
@@ -136,10 +140,38 @@ public class RestAdminDashboardApi {
 		hql+= " group by care_user.id , care_user.name "
 				+ "order by care_user.name";
 		System.out.println(hql);
-		//sql not hql
-		Query q = HibernateSessionFactory.getSession().createSQLQuery(hql);
 		
-		return null;
+		JSONArray array = new JSONArray();
+		Query q = HibernateSessionFactory.getSession().createSQLQuery(hql);
+		q.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+		System.out.println(">>>"+q.getQueryString());
+		List<HashMap<String, Object>>  results = q.list();
+		System.out.println(results.size());
+		for(HashMap<String, Object> row : results)
+		{
+			JSONArray arrayPerEmployee = new JSONArray();
+			Integer id = (int)row.get("id");
+			String name = row.get("name").toString();
+			Integer assigned = (int)row.get("assigned");
+			Integer completed = (int)row.get("completed");
+			Integer pending = (int)row.get("pending");
+			Integer trial = (int)row.get("trial");
+			Integer not_trade = (int)row.get("not_trade");
+			Integer others = (int)row.get("others");
+			arrayPerEmployee.put(id);
+			arrayPerEmployee.put(name);
+			arrayPerEmployee.put(assigned);
+			arrayPerEmployee.put(completed);
+			arrayPerEmployee.put(pending);
+			arrayPerEmployee.put(trial);
+			arrayPerEmployee.put(not_trade);
+			arrayPerEmployee.put(others);
+			array.put(arrayPerEmployee);
+		}
+		JSONObject obj = new JSONObject();
+		
+		obj.put("data", array);
+		return Response.status(200).entity(obj.toString()).build();
 	}
 	
 	@Path("/employee_list")
