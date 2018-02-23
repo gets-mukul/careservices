@@ -18,4 +18,5 @@ public class TaskStatusConstants {
 	public static String CALL_LATER="CALL_LATER";
 	public static String SWITCH_OFF="SWITCH_OFF";
 	public static String NOT_REACHABLE="NOT_REACHABLE";
+	public static String AFTER_SOME_TIME="AFTER_SOME_TIME";
 }

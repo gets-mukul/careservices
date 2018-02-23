@@ -19,5 +19,7 @@ public class AuthenticationConstants {
 	public static final String Employee = "employee";
 	public static final String MobileAlreadyExist = "User already exist with given mobile.";
 	public static final String SomeThingWentWrongInSavingCareUser = "Some thing went wrong in saving careuser";
-	public static String EmailNotFound ="No user exist with this email.";
+	public static final String GroupNameRequired = "Group Name Required";
+	public static final String NoNullMessage = "Message Can Not Be Empty";
+	public static final String EmailNotFound ="No user exist with this email.";
 }

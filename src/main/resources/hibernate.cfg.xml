@@ -8,9 +8,9 @@
 	<session-factory>
 		<property name="dialect">org.hibernate.dialect.DerbyDialect</property>
 		<property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-		<property name="hibernate.connection.password">61f44fb6e8f704af45d1ffd553f08ea795b207009f70b4645e1bc4e5cb307570</property>
-		<property name="hibernate.connection.url">jdbc:postgresql://ec2-54-221-234-62.compute-1.amazonaws.com:5432/d48jh4564gl568</property>
-		<property name="hibernate.connection.username">cjkknvvpdwpgji</property>
+		<property name="hibernate.connection.password">1234</property>
+		<property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/postgres</property>
+		<property name="hibernate.connection.username">postgres</property>
 		<property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
 		<property name="hbm2ddl.auto">update</property>
 		<property name="show_sql">true</property>
@@ -19,7 +19,7 @@
 		<mapping class="com.careservices.dao.CareUser" />
 		<mapping class="com.careservices.dao.Contact" />
 		<mapping class="com.careservices.dao.ScripCode" />
-
+		<mapping class="com.careservices.dao.City" />
 	</session-factory>
 
 </hibernate-configuration>

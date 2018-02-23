@@ -53,7 +53,7 @@ public class EmployeeRestApi {
 			
 		}
 		jsonObj.put("data", jsonArray);
-		return Response.status(200).entity(jsonObj.toString()).header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();
+		return Response.status(200).entity(jsonObj.toString()).build();
 		
 	}
 
