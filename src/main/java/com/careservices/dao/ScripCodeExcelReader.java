@@ -54,7 +54,7 @@ public class ScripCodeExcelReader {
 			sc.setSymbol(symbol);
 			sc.setExpiry( expiry1); 
 			sc.setMktLot(mkt_Lot);
-			System.out.println(sc.getSymbol() + " " + sc.getExpiry() + " " + sc.getMktLot());
+			
 			session.save(sc);
 
 			t.commit();

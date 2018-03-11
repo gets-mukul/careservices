@@ -26,6 +26,9 @@ public class Test {
 		String route = "4";
 		String senderId = "SMINSE";
 		String message = "hello!!! from BULK SMS ";
+		String mobiles = "9425465546";
+		
+		
 		
 		URLConnection myURLConnection = null;
 		URL myURL = null;
@@ -40,11 +43,12 @@ public class Test {
 		// Prepare parameter string
 		StringBuilder sbPostData = new StringBuilder(mainUrl);
 
-		sbPostData.append("authkey=" + authKey);
-		sbPostData.append("&message=" + encoded_message);
-		sbPostData.append("&sender=" + senderId);
-		sbPostData.append("&route=" + route);
-		sbPostData.append("&group_id=" + groupId);
+		
+		 sbPostData.append("authkey="+authKey);
+         sbPostData.append("&mobiles="+mobiles);
+         sbPostData.append("&message="+encoded_message);
+         sbPostData.append("&route="+route);
+         sbPostData.append("&sender="+senderId);
 
 		// final string
 		mainUrl = sbPostData.toString();
@@ -58,7 +62,7 @@ public class Test {
 			String response;
 			while ((response = reader.readLine()) != null)
 				// print response
-				System.out.println(response);
+				
 
 			// finally close connection
 			reader.close();

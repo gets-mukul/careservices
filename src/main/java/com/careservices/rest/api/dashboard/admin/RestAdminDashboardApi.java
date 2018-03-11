@@ -139,14 +139,12 @@ public class RestAdminDashboardApi {
 		
 		hql+= " group by care_user.id , care_user.name "
 				+ "order by care_user.name";
-		System.out.println(hql);
+		
 		
 		JSONArray array = new JSONArray();
 		Query q = HibernateSessionFactory.getSession().createSQLQuery(hql);
 		q.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
-		System.out.println(">>>"+q.getQueryString());
 		List<HashMap<String, Object>>  results = q.list();
-		System.out.println(results.size());
 		for(HashMap<String, Object> row : results)
 		{
 			JSONArray arrayPerEmployee = new JSONArray();

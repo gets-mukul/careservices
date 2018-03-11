@@ -71,8 +71,7 @@ public class ExcelReader {
 			cu.setPassword(password);
 			cu.setUserType(user_type);
 
-			System.out.println(cu.getId() + " " + cu.getCode() + " " + cu.getEmail() + " " + cu.getMobile() + " "
-					+ cu.getName() + " " + cu.getPassword() + " " + cu.getUserType());
+			
 			session.save(cu);
 
 			t.commit();

@@ -43,7 +43,7 @@ public class ContactExcel {
 			Contact c = new Contact();
 			c.setContactNumber(contact_number);
 			c.setUploadedBy(u);
-			System.out.println("sone Successfully");
+			
 
 			session.save(c);
 

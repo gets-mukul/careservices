@@ -8,8 +8,8 @@
 	<session-factory>
 		<property name="dialect">org.hibernate.dialect.DerbyDialect</property>
 		<property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-		<property name="hibernate.connection.password">1234</property>
-		<property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/postgres</property>
+		<property name="hibernate.connection.password">xnwPvCubjkMsPe47</property>
+		<property name="hibernate.connection.url">jdbc:postgresql://35.184.186.205:5432/postgres</property>
 		<property name="hibernate.connection.username">postgres</property>
 		<property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
 		<property name="hbm2ddl.auto">update</property>

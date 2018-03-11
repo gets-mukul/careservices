@@ -3,22 +3,28 @@
  */
 package com.careservices.rest.api;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import javax.persistence.TypedQuery;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -31,7 +37,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.json.JSONObject;
 
 import com.careservices.dao.CareUser;
 import com.careservices.dao.CareUserDAO;
@@ -48,10 +53,8 @@ public class ExcelUploader {
 	@Path("/upload/{user_id}")
 	@POST
 	public Response excelFileUploader(@FormDataParam("file") InputStream uploadedInputStream,
-			@FormDataParam("file") FormDataContentDisposition fileDetail, @PathParam("user_id") Integer userId)
-			{
-		System.out.println("gpt file "+fileDetail.getFileName());
-		String uploadedFileLocation = "F:\\excel\\" + UUID.randomUUID().toString() + System.currentTimeMillis()
+			@FormDataParam("file") FormDataContentDisposition fileDetail, @PathParam("user_id") Integer userId) {
+		String uploadedFileLocation = "F:\\Documentation" + UUID.randomUUID().toString() + System.currentTimeMillis()
 				+ fileDetail.getFileName();
 
 		try {
@@ -61,7 +64,6 @@ public class ExcelUploader {
 			e.printStackTrace();
 		}
 
-		
 		try {
 			FileInputStream fis = new FileInputStream(new File(uploadedFileLocation));
 			XSSFWorkbook workbook = new XSSFWorkbook(fis);
@@ -78,21 +80,12 @@ public class ExcelUploader {
 
 						String mobile = null;
 
-						switch (cell.getCellType()) {
-						case Cell.CELL_TYPE_NUMERIC:
-							mobile = cell.getNumericCellValue() + "";
-							mobile = mobile.toString().replaceAll(" ", "");
-							break;
+						mobile = cell.getNumericCellValue() + "";
+						mobile = mobile.toString().replaceAll(" ", "");
 
-						case Cell.CELL_TYPE_STRING:
-							mobile = cell.getStringCellValue();
-							mobile = mobile.replaceAll(" ", "");
-							break;
+						if (mobile != null) {
+							insertContactInDB(mobile, userId);
 						}
-						if(mobile!=null)
-						{
-							insertContactInDB(mobile,userId);
-						}	
 					}
 				}
 
@@ -103,45 +96,39 @@ public class ExcelUploader {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+
 		}
 
-
-
-		return Response.status(200).entity("file uploaded").header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();
+		return Response.status(200).entity("file uploaded").header("Access-Control-Allow-Origin", "*")
+				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();
 	}
 
 	private void insertContactInDB(String mobile, Integer userId) {
 		String mobileTrimeedd = mobile.trim().replace(" ", "");
-		mobileTrimeedd= 	mobileTrimeedd.replaceAll("[\\D]", "");
-		System.out.println(">>>"+mobileTrimeedd);
+		mobileTrimeedd = mobileTrimeedd.replaceAll("[\\D]", "");
 		CareUserDAO dao = new CareUserDAO();
 		CareUser cu = dao.findById(userId);
 		Long mobileNum = null;
 		try {
 			mobileNum = Long.parseLong(mobileTrimeedd);
-		} catch(Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if(mobileNum!=null)
-		{
+		if (mobileNum != null) {
 			Session session = HibernateSessionFactory.getSession();
-			//select * from contact where contact_number = mobile;
+			// select * from contact where contact_number = mobile;
 			String hql = "from Contact c where c.contactNumber=:mob";
 			Query query = session.createQuery(hql);
 			query.setLong("mob", mobileNum);
-			List<Contact> contacts =  query.list();
-			if(contacts.size()>0)
-			{
-				
-			}
-			else
-			{
+			List<Contact> contacts = query.list();
+			if (contacts.size() > 0) {
+
+			} else {
 				Contact contact = new Contact();
 				contact.setUploadedBy(cu);
 				contact.setContactNumber(mobileNum);
 				Timestamp uploadedAt = new Timestamp(System.currentTimeMillis());
-				contact.setUploadedAt(uploadedAt );
+				contact.setUploadedAt(uploadedAt);
 				Transaction orgTransaction = null;
 				try {
 					orgTransaction = session.beginTransaction();
@@ -152,18 +139,12 @@ public class ExcelUploader {
 					if (orgTransaction != null)
 						orgTransaction.rollback();
 				} finally {
-					
-				}			
-			}	
-				
+
+				}
+			}
+
 		}
-		else
-		{
-			System.out.println("mobile is null");
-		}	
-		
-		
-		
+
 	}
 
 	private void writeToFile(InputStream uploadedInputStream, String uploadedFileLocation) throws IOException {
@@ -180,4 +161,6 @@ public class ExcelUploader {
 		out.close();
 
 	}
+
+	
 }

@@ -59,7 +59,6 @@ public class RestClientTrailApi {
 
 		}
 
-		System.out.println("contact");
 
 		ContactDAO contactDao = new ContactDAO();
 		List<Contact> contact = contactDao.findByContactNumber(mobile);
@@ -111,7 +110,6 @@ public class RestClientTrailApi {
 			} catch (HibernateException e) {
 				e.printStackTrace();
 			}
-			System.out.println("Client trial");
 			jsonArray.put(ct);
 		}
 		
