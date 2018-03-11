@@ -35,7 +35,8 @@ public class EmployeeRestApi {
 		JSONObject jsonObj = new JSONObject();
 		JSONArray jsonArray = new JSONArray();
 		CareUser cu = new CareUserDAO().findById(emplId);		
-		Set<EmployeeTask> emplTask = cu.getEmployeeTasks();		
+		Set<EmployeeTask> emplTask = cu.getEmployeeTasks();
+		int count =1;
 		for (EmployeeTask employeeTask : emplTask) {
 			Long number = null;
 			
@@ -43,16 +44,15 @@ public class EmployeeRestApi {
 			{
 				
 				number = employeeTask.getContact().getContactNumber();
-				
-				JSONArray jsonArray2  = new JSONArray();
-				jsonArray2.put(number);
-				jsonArray2.put(employeeTask.getCreatedAt());	
-				jsonArray2.put(employeeTask.getId());	
-				jsonArray.put(jsonArray2);
+				JSONObject obj = new JSONObject();
+				obj.put("count",count++);
+				obj.put("contact_number",number);
+				obj.put("id", employeeTask.getContact().getId());
+				jsonArray.put(obj);
 			}
 			
 		}
-		jsonObj.put("data", jsonArray);
+		jsonObj.put("records", jsonArray);
 		return Response.status(200).entity(jsonObj.toString()).build();
 		
 	}
