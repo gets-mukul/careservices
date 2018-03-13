@@ -33,7 +33,7 @@ public class Contact extends BaseHibernateDAO implements java.io.Serializable {
 	private Long contactNumber;
 	private Set<EmployeeTask> employeeTasks = new HashSet<EmployeeTask>(0);
 	private Timestamp uploadedAt;
-	private Set<ClientTrail> relatedTrails; //kitne trail dia hai contact ko
+	
 
 	// Constructors
 	
@@ -65,15 +65,7 @@ public class Contact extends BaseHibernateDAO implements java.io.Serializable {
 
 	// Property accessors
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "relatedContact")
 	
-	public Set<ClientTrail> getRelatedTrails() {
-		return relatedTrails;
-	}
-
-	public void setRelatedTrails(Set<ClientTrail> relatedTrails) {
-		this.relatedTrails = relatedTrails;
-	}
 	
 	
 	@GenericGenerator(name = "generator", strategy = "increment")

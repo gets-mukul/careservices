@@ -1,7 +1,9 @@
 package com.careservices.dao;
 
 import java.sql.Timestamp;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -26,14 +29,13 @@ public class EmployeeTask extends BaseHibernateDAO implements java.io.Serializab
 	private Integer id;
 	private CareUser actor;
 	private Contact contact;
-	private String paymentAmount;
-	private String paymentId;
-	private String paymentType;
+	
 	private String status;
 	private Timestamp createdAt;
 
 	private CareUser createdBy;
-
+	private Timestamp updatedAt;
+	private Set<ClientTrail> relatedTrails; //kitne trail dia hai contact ko
 	// Constructors
 
 	/** default constructor */
@@ -47,17 +49,7 @@ public class EmployeeTask extends BaseHibernateDAO implements java.io.Serializab
 		this.contact = contact;
 	}
 
-	/** full constructor */
-	public EmployeeTask(Integer id, CareUser careUser, Contact contact, String paymentAmount, String paymentId,
-			String paymentType, String status) {
-		this.id = id;
-		this.actor = careUser;
-		this.contact = contact;
-		this.paymentAmount = paymentAmount;
-		this.paymentId = paymentId;
-		this.paymentType = paymentType;
-		this.status = status;
-	}
+	
 
 	// Property accessors
 	@GenericGenerator(name = "generator", strategy = "increment")
@@ -97,35 +89,7 @@ public class EmployeeTask extends BaseHibernateDAO implements java.io.Serializab
 		this.contact = contact;
 	}
 
-	@Column(name = "payment_amount")
 
-	public String getPaymentAmount() {
-		return this.paymentAmount;
-	}
-
-	public void setPaymentAmount(String paymentAmount) {
-		this.paymentAmount = paymentAmount;
-	}
-
-	@Column(name = "payment_id")
-
-	public String getPaymentId() {
-		return this.paymentId;
-	}
-
-	public void setPaymentId(String paymentId) {
-		this.paymentId = paymentId;
-	}
-
-	@Column(name = "payment_type")
-
-	public String getPaymentType() {
-		return this.paymentType;
-	}
-
-	public void setPaymentType(String paymentType) {
-		this.paymentType = paymentType;
-	}
 
 	@Column(name = "status")
 
@@ -155,5 +119,25 @@ public class EmployeeTask extends BaseHibernateDAO implements java.io.Serializab
 	public void setcreatedBy(CareUser createdBy) {
 		this.createdBy = createdBy;
 	}
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "relatedTask")
+	
+	public Set<ClientTrail> getRelatedTrails() {
+		return relatedTrails;
+	}
 
+	public void setRelatedTrails(Set<ClientTrail> relatedTrails) {
+		this.relatedTrails = relatedTrails;
+	}
+
+	@Column(name = "updated_at")
+	public Timestamp getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(Timestamp updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+	
+	
 }

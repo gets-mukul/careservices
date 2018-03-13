@@ -22,6 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.careservices.dao.HibernateSessionFactory;
+import com.careservices.dao.ScripCode;
 import com.careservices.dao.Segment;
 import com.careservices.dao.SegmentDAO;
 
@@ -62,26 +63,22 @@ public class RestSegmentApi {
 			}			
 		}
 		
-		
 		for(Segment s : childSegment)
 		{
 			JSONObject child = new JSONObject();
 			child.put("name", s.getName());
 			JSONArray children = new JSONArray();
-			String hql ="from Segment s where s.parentId=:parentId order by s.name";
-			Query query = session.createQuery(hql);
-			query.setParameter("parentId", s.getId());
-			List<Segment>childSegmentList = query.list();
-			for(Segment grandChild : childSegmentList)
+			for(ScripCode code : s.getScripCodes())
 			{
 				JSONObject childrenObject = new JSONObject();
-				childrenObject.put("id", grandChild.getId());
-				childrenObject.put("name", grandChild.getName());
+				childrenObject.put("id", code.getId());
+				childrenObject.put("name", code.getSymbol().trim().toUpperCase());
 				children.put(childrenObject);
 			}
 			child.put("children",children);
 			jsonArray.put(child);
-		}
+		}	
+		
 		
 		jsonObj.put("records", jsonArray);
 		return Response.status(200).entity(jsonObj.toString()).build();
@@ -96,7 +93,7 @@ public class RestSegmentApi {
 		Segment segment = null;
 		for(Segment s : (List<Segment>)new SegmentDAO().findAll())
 		{
-			if(s.getName().equalsIgnoreCase("COMMODITY"))
+			if(s.getName().equalsIgnoreCase("DERIVATIVE"))
 			{
 				segment = s;
 				break;
@@ -122,15 +119,11 @@ public class RestSegmentApi {
 			JSONObject child = new JSONObject();
 			child.put("name", s.getName());
 			JSONArray children = new JSONArray();
-			String hql ="from Segment s where s.parentId=:parentId order by s.name";
-			Query query = session.createQuery(hql);
-			query.setParameter("parentId", s.getId());
-			List<Segment>childSegmentList = query.list();
-			for(Segment grandChild : childSegmentList)
+			for(ScripCode code : s.getScripCodes())
 			{
 				JSONObject childrenObject = new JSONObject();
-				childrenObject.put("id", grandChild.getId());
-				childrenObject.put("name", grandChild.getName());
+				childrenObject.put("id", code.getId());
+				childrenObject.put("name", code.getSymbol().trim().toUpperCase());
 				children.put(childrenObject);
 			}
 			child.put("children",children);
@@ -169,14 +162,11 @@ public class RestSegmentApi {
 			JSONObject child = new JSONObject();
 			child.put("name", s.getName());
 			JSONArray children = new JSONArray();
-			String hql = "from Segment s where s.parentId=:parentId order by s.name";
-			Query query = session.createQuery(hql);
-			query.setParameter("parentId", s.getId());
-			List<Segment> childSegmentList = query.list();
-			for (Segment grandChild : childSegmentList) {
+			for(ScripCode code : s.getScripCodes())
+			{
 				JSONObject childrenObject = new JSONObject();
-				childrenObject.put("id", grandChild.getId());
-				childrenObject.put("name", grandChild.getName());
+				childrenObject.put("id", code.getId());
+				childrenObject.put("name", code.getSymbol().trim().toUpperCase());
 				children.put(childrenObject);
 			}
 			child.put("children", children);
@@ -190,7 +180,6 @@ public class RestSegmentApi {
 	@Path("/parent/{parent_id}")
 	@GET
 	@Produces("application/json")
-
 	public Response showSegmentList(@PathParam("parent_id") Integer parentId) {
 
 		JSONArray jsonArr = new JSONArray();

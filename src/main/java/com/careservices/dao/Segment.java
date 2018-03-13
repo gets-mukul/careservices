@@ -36,6 +36,8 @@ public class Segment extends BaseHibernateDAO implements java.io.Serializable {
 	private Integer id;
 	private String name;
 	private Integer parentId;
+	private Set<ScripCode> scripCodes = new HashSet<>(0);
+	private Set<ClientTrail>clientTrails = new HashSet<>(0);
 	// Constructors
 	
 	
@@ -87,6 +89,30 @@ public class Segment extends BaseHibernateDAO implements java.io.Serializable {
 
 	public void setParentId(Integer parentId) {
 		this.parentId = parentId;
+	}
+
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "segment")
+	public Set<ScripCode> getScripCodes() {
+		return scripCodes;
+	}
+
+
+
+	public void setScripCodes(Set<ScripCode> scripCodes) {
+		this.scripCodes = scripCodes;
+	}
+
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "segment")
+	public Set<ClientTrail> getClientTrails() {
+		return clientTrails;
+	}
+
+
+
+	public void setClientTrails(Set<ClientTrail> clientTrails) {
+		this.clientTrails = clientTrails;
 	}
 
 	
