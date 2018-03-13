@@ -29,10 +29,118 @@ import com.careservices.dao.SegmentDAO;
 @Path("/segment")
 public class RestSegmentApi {
 
+	
+	@GET
+	@Path("/equity")
+	@Produces("application/json")
+	public Response getEquityScrip() {
+		JSONObject jsonObj = new JSONObject();
+		JSONArray jsonArray = new JSONArray();
+		Segment segment = null;
+		for(Segment s : (List<Segment>)new SegmentDAO().findAll())
+		{
+			if(s.getName().equalsIgnoreCase("EQUITY"))
+			{
+				segment = s;
+				break;
+			}	
+		}
+		Session session = HibernateSessionFactory.getSession();
+		ArrayList<Segment>childSegment = new ArrayList<>();
+		if(segment!=null)
+		{
+			String hql ="from Segment s where s.parentId=:parentId order by s.name";
+			Query query = session.createQuery(hql);
+			query.setParameter("parentId", segment.getId());
+			List<Segment>childSegmentList = query.list();
+			for(Segment s : childSegmentList)
+			{
+				childSegment.add(s);
+			}			
+		}
+		
+		
+		for(Segment s : childSegment)
+		{
+			JSONObject child = new JSONObject();
+			child.put("name", s.getName());
+			JSONArray children = new JSONArray();
+			String hql ="from Segment s where s.parentId=:parentId order by s.name";
+			Query query = session.createQuery(hql);
+			query.setParameter("parentId", s.getId());
+			List<Segment>childSegmentList = query.list();
+			for(Segment grandChild : childSegmentList)
+			{
+				JSONObject childrenObject = new JSONObject();
+				childrenObject.put("id", grandChild.getId());
+				childrenObject.put("name", grandChild.getName());
+				children.put(childrenObject);
+			}
+			child.put("children",children);
+			jsonArray.put(child);
+		}
+		
+		jsonObj.put("records", jsonArray);
+		return Response.status(200).entity(jsonObj.toString()).build();
+	}
+	
+	@GET
+	@Path("/derivative")
+	@Produces("application/json")
+	public Response getDerivativeScrip() {
+		JSONObject jsonObj = new JSONObject();
+		JSONArray jsonArray = new JSONArray();
+		Segment segment = null;
+		for(Segment s : (List<Segment>)new SegmentDAO().findAll())
+		{
+			if(s.getName().equalsIgnoreCase("COMMODITY"))
+			{
+				segment = s;
+				break;
+			}	
+		}
+		Session session = HibernateSessionFactory.getSession();
+		ArrayList<Segment>childSegment = new ArrayList<>();
+		if(segment!=null)
+		{
+			String hql ="from Segment s where s.parentId=:parentId order by s.name";
+			Query query = session.createQuery(hql);
+			query.setParameter("parentId", segment.getId());
+			List<Segment>childSegmentList = query.list();
+			for(Segment s : childSegmentList)
+			{
+				childSegment.add(s);
+			}			
+		}
+		
+		
+		for(Segment s : childSegment)
+		{
+			JSONObject child = new JSONObject();
+			child.put("name", s.getName());
+			JSONArray children = new JSONArray();
+			String hql ="from Segment s where s.parentId=:parentId order by s.name";
+			Query query = session.createQuery(hql);
+			query.setParameter("parentId", s.getId());
+			List<Segment>childSegmentList = query.list();
+			for(Segment grandChild : childSegmentList)
+			{
+				JSONObject childrenObject = new JSONObject();
+				childrenObject.put("id", grandChild.getId());
+				childrenObject.put("name", grandChild.getName());
+				children.put(childrenObject);
+			}
+			child.put("children",children);
+			jsonArray.put(child);
+		}
+		
+		jsonObj.put("records", jsonArray);
+		return Response.status(200).entity(jsonObj.toString()).build();
+	}
 	@GET
 	@Path("/commodity")
 	@Produces("application/json")
-	public Response getCommoditySegmentValue() {
+	public Response getCommodityScrip() {
 		JSONObject jsonObj = new JSONObject();
 		JSONArray jsonArray = new JSONArray();
 		Segment segment = null;
