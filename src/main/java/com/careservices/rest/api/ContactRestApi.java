@@ -12,8 +12,12 @@ import javax.ws.rs.core.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.careservices.dao.CareUser;
+import com.careservices.dao.CareUserDAO;
 import com.careservices.dao.Contact;
 import com.careservices.dao.ContactDAO;
+import com.careservices.dao.EmployeeTask;
+import com.careservices.dao.EmployeeTaskDAO;
 
 /**
  * @author JARVIS
@@ -21,6 +25,10 @@ import com.careservices.dao.ContactDAO;
  */
 @Path("/abc")
 public class ContactRestApi {
+	
+	
+	
+	
 	@Path("/unassigned_contact")
 	@GET
 	@Produces("application/json")
@@ -110,4 +118,6 @@ public class ContactRestApi {
 		jsonObj.put("data", jsonArray);
 		return Response.status(200).entity(jsonObj.toString()).header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();
 	}
+	
+	
 }

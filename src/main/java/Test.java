@@ -1,74 +1,72 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 
-/**
- * 
- */
+import java.util.List;
 
-/**
- * @author JARVIS
- *
- */
+import javax.persistence.TypedQuery;
+
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
+import com.careservices.dao.ClientTrail;
+import com.careservices.dao.EmployeeTask;
+import com.careservices.dao.EmployeeTaskDAO;
+import com.careservices.dao.HibernateSessionFactory;
+import com.careservices.dao.Segment;
+
+import javafx.scene.control.Separator;
+
 public class Test {
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
+		// sessionSave();
+		testHQL();
+
+	}
+
+	private static void testSQL() {
 		// TODO Auto-generated method stub
-		
-		String authKey = "4210AWhBuxbuCOF592c07c0";
-		String groupId = "5a89598685f909f7318b4599";
-		String route = "4";
-		String senderId = "SMINSE";
-		String message = "hello!!! from BULK SMS ";
-		String mobiles = "9425465546";
-		
-		
-		
-		URLConnection myURLConnection = null;
-		URL myURL = null;
-		BufferedReader reader = null;
 
-		// encoding message
-		String encoded_message = URLEncoder.encode(message);
+	}
 
-		// Send SMS API
-		String mainUrl = "http://login.yourbulksms.com/api/sendhttp.php?";
+	private static void testForLoop() {
+		long time = System.currentTimeMillis();
+		List<EmployeeTask> tasks = new EmployeeTaskDAO().findAll();
+		for (EmployeeTask t : tasks) {
 
-		// Prepare parameter string
-		StringBuilder sbPostData = new StringBuilder(mainUrl);
+		}
 
+	}
+
+	private static void testHQL() {
+		Session session = HibernateSessionFactory.getSession();
+
+		String hql = "from Segment s where s.parentId=:parentId order by s.name";
+		Query query = session.createQuery(hql);
+		query.setParameter("parentId", null);
 		
-		 sbPostData.append("authkey="+authKey);
-         sbPostData.append("&mobiles="+mobiles);
-         sbPostData.append("&message="+encoded_message);
-         sbPostData.append("&route="+route);
-         sbPostData.append("&sender="+senderId);
+		List<Segment> list = query.list();  
+		Integer listSize = list.size();
+		System.out.println("size"+listSize);
+		for (Segment segment : list) {
+			System.out.println(segment.getName());
+		}
+	}
+		
 
-		// final string
-		mainUrl = sbPostData.toString();
+	private static void sessionSave() {
+		// TODO Auto-generated method stub
+		Session session = HibernateSessionFactory.getSession();
+		ClientTrail ct = new ClientTrail();
+		Transaction orgTransaction = null;
 		try {
-			// prepare connection
-			myURL = new URL(mainUrl);
-			myURLConnection = myURL.openConnection();
-			myURLConnection.connect();
-			reader = new BufferedReader(new InputStreamReader(myURLConnection.getInputStream()));
-			// reading response
-			String response;
-			while ((response = reader.readLine()) != null)
-				// print response
-				
-
-			// finally close connection
-			reader.close();
-		} catch (IOException e) {
+			orgTransaction = session.beginTransaction();
+			session.save(ct);
+			orgTransaction.commit();
+		} catch (HibernateException e) {
 			e.printStackTrace();
-		}		
-		
+			if (orgTransaction != null)
+				orgTransaction.rollback();
+		}
 	}
 }
