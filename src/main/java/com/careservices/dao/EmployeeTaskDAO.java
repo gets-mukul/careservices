@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
  * transactions. Each of these methods provides additional information for how
  * to configure it for the desired type of transaction control.
  * 
- * @see careinvestmentservices.dao.EmployeeTask
+ * @see com.careservices.dao.EmployeeTask
  * @author MyEclipse Persistence Tools
  */
 public class EmployeeTaskDAO extends BaseHibernateDAO {
@@ -51,7 +51,7 @@ public class EmployeeTaskDAO extends BaseHibernateDAO {
 	public EmployeeTask findById(java.lang.Integer id) {
 		log.debug("getting EmployeeTask instance with id: " + id);
 		try {
-			EmployeeTask instance = (EmployeeTask) getSession().get("careinvestmentservices.dao.EmployeeTask", id);
+			EmployeeTask instance = (EmployeeTask) getSession().get("com.careservices.dao.EmployeeTask", id);
 			return instance;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
@@ -63,7 +63,7 @@ public class EmployeeTaskDAO extends BaseHibernateDAO {
 		log.debug("finding EmployeeTask instance by example");
 		try {
 			List<EmployeeTask> results = (List<EmployeeTask>) getSession()
-					.createCriteria("careinvestmentservices.dao.EmployeeTask").add(create(instance)).list();
+					.createCriteria("com.careservices.dao.EmployeeTask").add(create(instance)).list();
 			log.debug("find by example successful, result size: " + results.size());
 			return results;
 		} catch (RuntimeException re) {
