@@ -6,115 +6,78 @@ package com.careservices.rest.api;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.careservices.constants.TaskStatusConstants;
 import com.careservices.dao.CareUser;
 import com.careservices.dao.CareUserDAO;
 import com.careservices.dao.ClientTrail;
 import com.careservices.dao.Contact;
 import com.careservices.dao.ContactDAO;
+import com.careservices.dao.EmployeeTask;
+import com.careservices.dao.EmployeeTaskDAO;
 import com.careservices.dao.HibernateSessionFactory;
 
 /**
  * @author JARVIS
  *
  */
-@Path("/client")
+@Path("/trial")
 public class RestClientTrailApi {
-	@Path("/trail")
-	@POST
+	
+	
+	@Path("/all/{employee_id}")
+	@GET
 	@Produces("application/json")
-	public Response getClientDetail(String clientDetail) throws ParseException {
-
-		JSONObject obj = new JSONObject(clientDetail);
+	public Response getEmployeeTrialDetails(@PathParam("employee_id") Integer employeeId) throws ParseException {
 
 		Session session = HibernateSessionFactory.getSession();
-		Long mobile = obj.getLong("mobile");
-		ContactDAO dao = new ContactDAO();
-		List<Contact> c = dao.findByContactNumber(mobile);
-
-		for (Contact contact : c) {
-			contact.setContactName("name");
-			contact.setContactLocation("location");
-
-			Transaction orgTransaction = null;
-			try {
-				orgTransaction = session.beginTransaction();
-				session.save(c);
-				orgTransaction.commit();
-			} catch (HibernateException e) {
-				e.printStackTrace();
-			}
-
+		JSONObject obj = new JSONObject();
+		JSONArray array = new JSONArray();
+		CareUser employee = new CareUserDAO().findById(employeeId);
+		String hql ="from ClientTrail trial where trial.relatedTask.actor =:actor order by trial.trailStartDate, trial.time";
+		Query query = session.createQuery(hql);
+		query.setParameter("actor", employee);
+		//query.setParameter("status", TaskStatusConstants.TRIAL);
+		List<ClientTrail>trials  = query.list();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
+		for(ClientTrail trial : trials)
+		{
+			if(trial.getStatus().equalsIgnoreCase(TaskStatusConstants.TRIAL))
+			{
+				String color="success";
+				if(!new Date().before(trial.getTrailStartDate()))
+				{
+					color="danger";
+				}					
+				JSONObject o = new JSONObject();
+				o.put("id", trial.getId());
+				o.put("start_date", sdf.format(trial.getTrailStartDate()));
+				o.put("start_time", timeFormat.format(trial.getTime()));
+				o.put("end_date", sdf.format(trial.getTrailEndDate()));
+				o.put("segment", trial.getSegment().getName());
+				o.put("color", color);
+				array.put(o);
+			}				
 		}
-
-
-		ContactDAO contactDao = new ContactDAO();
-		List<Contact> contact = contactDao.findByContactNumber(mobile);
-		JSONArray jsonArray = new JSONArray();
-		
-
-		for (Contact contact2 : contact) {
-			
-			ClientTrail ct = new ClientTrail();
-			Session session1 = HibernateSessionFactory.getSession();
-		
-
-			Integer id = contact2.getId();
-
-			ct.setId(id);
-			ct.setStatus(obj.getString("status"));
-
-			String stringDate = obj.getString("trail_start_date");
-			DateFormat formatter = null;
-			formatter = new SimpleDateFormat("dd/mm/yyyy");
-			ct.setTrailStartDate(formatter.parse(stringDate));
-
-			String stringDate1 = obj.getString("trail_end_date");
-			DateFormat formatter1 = null;
-			formatter1 = new SimpleDateFormat("dd/mm/yyyy");
-			ct.setTrailStartDate(formatter1.parse(stringDate1));
-
-			ct.setSecrip(obj.getString("secrip"));
-			ct.setLongShort(obj.getString("long_short"));
-			ct.setSegment(obj.getString("segment"));
-
-			String stringDate2 = obj.getString("expiry_date");
-			DateFormat formatter2 = null;
-			formatter2 = new SimpleDateFormat("dd/mm/yyyy");
-			ct.setExpityDate(formatter2.parse(stringDate2));
-
-			ct.setStrikePrice(obj.getDouble("strike_price"));
-			ct.setLotSizeQty(obj.getInt("lot_size_qty"));
-			ct.setBuySell(obj.getLong("buy_sell"));
-			ct.setFirstTarget(obj.getInt("first_target"));
-			ct.setSecondTarget(obj.getInt("second_target"));
-			ct.setStopLoss(obj.getInt("stop_loss"));
-
-			Transaction orgTransaction1 = null;
-			try {
-				orgTransaction1 = session.beginTransaction();
-				session1.save(ct);
-				orgTransaction1.commit();
-			} catch (HibernateException e) {
-				e.printStackTrace();
-			}
-			jsonArray.put(ct);
-		}
-		
-
-		return Response.status(200).entity(jsonArray).header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();
+		obj.put("records", array);		
+		return Response.status(200).entity(obj.toString()).header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();
 	}
 
 }

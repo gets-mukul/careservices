@@ -146,7 +146,9 @@ public class RestEmployeeApi {
 			e.printStackTrace();
 		}
 		
-		return null;
+		JSONObject obj = new JSONObject();
+		obj.put("message", "Task submitted successfully.");
+		return Response.status(200).entity(obj.toString()).header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();
 	}
 	
 	
