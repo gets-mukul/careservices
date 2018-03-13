@@ -132,17 +132,22 @@ public class SendSms {
 	public Response createGroup(String groupName) {
 
 		JSONObject jsonObj = new JSONObject();
+		JSONObject jobj = new JSONObject();
 		SMSUtility utility = new SMSUtility();
-
+		String groupId = null;
 		if (groupName == null) {
 			jsonObj.put("message", SmsUtilityConstants.GroupNameRequired);
 			jsonObj.put("status", false);
 			return Response.status(200).entity(jsonObj.toString()).build();
 
 		} else {
-			utility.createNewGroup(groupName);
+			groupId = utility.createNewGroup(groupName);
+			
+			jobj.put("group_name", groupName);
+			jobj.put("group_id", groupId);
 		}
-		return Response.status(Status.OK).entity(groupName).header("Access-Control-Allow-Origin", "*")
+		
+		return Response.status(Status.OK).entity(jobj.toString()).header("Access-Control-Allow-Origin", "*")
 				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();
 
 	}
@@ -338,43 +343,24 @@ public class SendSms {
 				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();
 	}
 
-	@Path("/delete_group/{auth_key}/{group_id}")
-	@GET
+	@Path("/delete_group")
+	@POST
 	@Produces("application/json")
 	// Delete group
 
-	public Response removeGroup(@PathParam("auth_key") String authKey, @PathParam("group_id") String groupId) {
-
-		String s = null;
-		URLConnection myURLConnection = null;
-		URL myURL = null;
-		BufferedReader reader = null;
-
-		String mainUrl = "http://login.yourbulksms.com/api/delete_group.php?";
-
-		StringBuilder sbPostData = new StringBuilder(mainUrl);
-		sbPostData.append("authkey=" + authKey);
-		sbPostData.append("&group_id=" + groupId);
-
-		mainUrl = sbPostData.toString();
-		try {
-			// prepare connection
-			myURL = new URL(mainUrl);
-			myURLConnection = myURL.openConnection();
-			myURLConnection.connect();
-			reader = new BufferedReader(new InputStreamReader(myURLConnection.getInputStream()));
-			// reading response
-			String response;
-			while ((response = reader.readLine()) != null)
-			// print response
-			{
-				s = response;
+	public Response removeGroup(String groupId) {
+		
+		
+		JSONObject jsonObj = new JSONObject();
+		SMSUtility utility = new SMSUtility();
+		String gid = null;
+		if (groupId != null && !groupId.equalsIgnoreCase("")) {
+			gid = groupId;
+			utility.removeGroup(gid);
+		} else {
+			jsonObj.put("message", SmsUtilityConstants.GroupIdNotFound);
+			jsonObj.put("status", false);
 			}
-			// finally close connection
-			reader.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return Response.status(200).entity(s.toString()).build();
-	}
+		return Response.status(Status.OK).entity(jsonObj.toString()).header("Access-Control-Allow-Origin", "*")
+				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();		}
 }

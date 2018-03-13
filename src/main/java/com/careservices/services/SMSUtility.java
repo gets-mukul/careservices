@@ -84,7 +84,7 @@ public class SMSUtility {
 		}
 	}
 
-	public void createNewGroup(String groupName) {
+	public String createNewGroup(String groupName) {
 
 		URLConnection myURLConnection = null;
 		URL myURL = null;
@@ -93,7 +93,7 @@ public class SMSUtility {
 		String mainUrl = "http://login.yourbulksms.com/api/add_group.php?";
 		StringBuilder sbPostData = new StringBuilder(mainUrl);
 		sbPostData.append("authkey=" + KEY);
-		sbPostData.append("&group_name=" + groupName);
+		sbPostData.append("&group_name=" + groupName.toUpperCase());
 		mainUrl = sbPostData.toString();
 		try {
 			myURL = new URL(mainUrl);
@@ -108,6 +108,9 @@ public class SMSUtility {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		JSONObject object = new JSONObject(sb.toString());
+		String groupId = object.getString("grpId");	
+		return groupId;
 	}
 
 	public void addContactToGroup(String name, String mobile, String groupId) {
@@ -118,7 +121,7 @@ public class SMSUtility {
 		String mainUrl = "http://login.yourbulksms.com/api/add_contact.php?";
 		StringBuilder sbPostData = new StringBuilder(mainUrl);
 		sbPostData.append("authkey=" + KEY);
-		sbPostData.append("&name=" + name);
+		sbPostData.append("&name=" + name.toUpperCase());
 		sbPostData.append("&mob_no=" + mobile);
 		sbPostData.append("&group=" + groupId);
 		mainUrl = sbPostData.toString();
@@ -190,23 +193,7 @@ public class SMSUtility {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		/*JSONArray jsonArr = new JSONArray();
-		try {
-			JSONArray jsonArray = new JSONArray(s);
-			for (int i = 0; i < (jsonArray.length() - 1); i++) {
-				JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-				JSONObject jsonObj = new JSONObject();
-				String contactid = jsonObject1.optString("contactid");
-				String number = jsonObject1.optString("number");
-				String name = jsonObject1.optString("name");
-				jsonObj.put("contactid", contactid);
-				jsonObj.put("number", number);
-				jsonObj.put("name", name);
-				jsonArr.put(jsonObj);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}*/
+		
 		
 	}
 

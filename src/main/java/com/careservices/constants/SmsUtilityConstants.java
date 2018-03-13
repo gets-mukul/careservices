@@ -16,6 +16,7 @@ public class SmsUtilityConstants {
 	public static final String MobileCanNotBeNull = "Mobile Number Can Not Be Null";
 	public static final String DataIsNull = "Your Data Is Empty";
 	public static final String ContactIdNotDefine = "Contact Id Can Not Be Null";
+	public static final String GroupIdNotFound = "Group Id Does Not Exist";
 	
 
 }
