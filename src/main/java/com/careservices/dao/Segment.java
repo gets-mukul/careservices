@@ -34,12 +34,9 @@ public class Segment extends BaseHibernateDAO implements java.io.Serializable {
 	private Integer id;
 	private String name;
 	private Integer parentId;
-<<<<<<< HEAD
 	private String groupId;
-=======
 	private Set<ScripCode> scripCodes = new HashSet<>(0);
 	private Set<ClientTrail>clientTrails = new HashSet<>(0);
->>>>>>> branch 'master' of https://github.com/gets-mukul/careservices.git
 	// Constructors
 
 	@GenericGenerator(name = "generator", strategy = "increment")
@@ -80,7 +77,6 @@ public class Segment extends BaseHibernateDAO implements java.io.Serializable {
 		this.parentId = parentId;
 	}
 
-<<<<<<< HEAD
 	@Column(name = "group_id")
 
 	public String getGroupId() {
@@ -91,7 +87,6 @@ public class Segment extends BaseHibernateDAO implements java.io.Serializable {
 		this.groupId = groupId;
 	}
 
-=======
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "segment")
 	public Set<ScripCode> getScripCodes() {
@@ -117,5 +112,4 @@ public class Segment extends BaseHibernateDAO implements java.io.Serializable {
 	}
 
 	
->>>>>>> branch 'master' of https://github.com/gets-mukul/careservices.git
 }

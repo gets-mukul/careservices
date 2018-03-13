@@ -43,35 +43,6 @@ import com.careservices.dao.SegmentDAO;
 @Path("/employee")
 public class RestEmployeeApi {
 
-	@GET
-	@Path("/incomplete/{empl_id}")
-	@Produces("application/json")
-	public Response employeeWorkDone (@PathParam ("empl_id") Integer emplId) {
-		
-		JSONObject jsonObj = new JSONObject();
-		JSONArray jsonArray = new JSONArray();
-		CareUser cu = new CareUserDAO().findById(emplId);		
-		Set<EmployeeTask> emplTask = cu.getEmployeeTasks();
-		int count =1;
-		for (EmployeeTask employeeTask : emplTask) {
-			Long number = null;
-			
-			if(employeeTask.getStatus().equalsIgnoreCase(TaskStatusConstants.INCOMPLETE))
-			{
-				
-				number = employeeTask.getContact().getContactNumber();
-				JSONObject obj = new JSONObject();
-				obj.put("count",count++);
-				obj.put("contact_number",number);
-				obj.put("task_id", employeeTask.getId());
-				jsonArray.put(obj);
-			}
-			
-		}
-		jsonObj.put("records", jsonArray);
-		return Response.status(200).entity(jsonObj.toString()).build();
-		
-	}
 	
 	@POST
 	@Path("/submit_employee_task")

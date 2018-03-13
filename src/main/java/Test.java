@@ -13,6 +13,7 @@ import com.careservices.dao.EmployeeTask;
 import com.careservices.dao.EmployeeTaskDAO;
 import com.careservices.dao.HibernateSessionFactory;
 import com.careservices.dao.Segment;
+import com.careservices.services.SMSUtility;
 
 import javafx.scene.control.Separator;
 
@@ -39,17 +40,17 @@ public class Test {
 	}
 
 	private static void testHQL() {
-		Session session = HibernateSessionFactory.getSession();
+		Session groupSession = HibernateSessionFactory.getSession();
+		SMSUtility utility = new SMSUtility();
 
-		String hql = "from Segment where id=:id or parent_id=:id";//delete
-		Query query = session.createQuery(hql);
-		query.setParameter("id", 6);
+		String hql = "from Segment where id=:id or parent_id=:id";
+		Query query = groupSession.createQuery(hql);
+		query.setParameter("id", 9);
 		
 		List<Segment> list = query.list();  
-		Integer listSize = list.size();
-		System.out.println("size"+listSize);	
+			
 		for (Segment segment : list) {
-			System.out.println(segment.getName());
+			utility.removeGroup(segment.getGroupId());
 		}
 	}
 		
