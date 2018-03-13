@@ -24,6 +24,7 @@ import org.json.JSONObject;
 import com.careservices.dao.HibernateSessionFactory;
 import com.careservices.dao.Segment;
 import com.careservices.dao.SegmentDAO;
+import com.careservices.services.SMSUtility;
 
 /**
  * @author Mayank
@@ -128,14 +129,14 @@ public class RestSegmentApi {
 	public Response addNewSegment(@PathParam("parent_id") Integer parentId, @PathParam("segment_name") String segmentName){
 		
 		Session session = HibernateSessionFactory.getSession();
-
+		SMSUtility utility = new SMSUtility();
 		Segment segmentObj = new Segment();
 		JSONObject jsonObj = new JSONObject();
 		if(parentId==-1) {
 			parentId=null;
 		}
 		
-		segmentObj.setName(segmentName);
+		segmentObj.setName(segmentName.toUpperCase());
 		segmentObj.setParentId(parentId);
 		Transaction orgTransaction = null;
 		try {
@@ -145,9 +146,51 @@ public class RestSegmentApi {
 		} catch (HibernateException e) {
 			e.printStackTrace();
 		}
-		
-		jsonObj.put("name", segmentName);
+		String groupId = utility.createNewGroup(segmentName.toUpperCase());
+		System.out.println(groupId);
+		jsonObj.put("name", segmentName.toUpperCase());
 		jsonObj.put("parent_id", parentId);
+		return Response.status(Status.OK).entity(jsonObj.toString()).header("Access-Control-Allow-Origin", "*")
+				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();
+	}
+	
+	@Path("/remove_segment/{segment_id}")
+	@GET
+	@Produces("application/json")
+	public Response removeSegment(@PathParam("segment_id") Integer segmentId) {
+		JSONObject jsonObj = new JSONObject();
+		Session childSession = HibernateSessionFactory.getSession();
+		Session parentSession = HibernateSessionFactory.getSession();
+		String hql = "delete Segment where parent_id=:id";
+		Query query = childSession.createQuery(hql);
+		query.setParameter("id", segmentId);
+		Integer childRow = query.executeUpdate();
+		Transaction orgTransaction = null;
+		try {
+			orgTransaction = childSession.beginTransaction();
+			childSession.getTransaction(); 
+			orgTransaction.commit();
+		} catch (HibernateException e) {
+			e.printStackTrace();
+		}
+		
+		hql = "delete Segment where id=:id";
+		query = parentSession.createQuery(hql);
+		query.setParameter("id", segmentId);
+		Integer parentRow = query.executeUpdate();
+		Transaction parentTransaction = null;
+		try {
+			parentTransaction = parentSession.beginTransaction();
+			parentSession.getTransaction(); 
+			parentTransaction.commit();
+		} catch (HibernateException e) {
+			e.printStackTrace();
+		}
+		
+		
+		jsonObj.put("no_of_row_deleted", childRow+parentRow );
+		jsonObj.put("status", true);
+		
 		return Response.status(Status.OK).entity(jsonObj.toString()).header("Access-Control-Allow-Origin", "*")
 				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();
 	}

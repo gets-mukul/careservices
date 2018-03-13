@@ -132,17 +132,21 @@ public class SendSms {
 	public Response createGroup(String groupName) {
 
 		JSONObject jsonObj = new JSONObject();
+		JSONObject jobj = new JSONObject();
 		SMSUtility utility = new SMSUtility();
-
+		String groupId = null;
 		if (groupName == null) {
 			jsonObj.put("message", SmsUtilityConstants.GroupNameRequired);
 			jsonObj.put("status", false);
 			return Response.status(200).entity(jsonObj.toString()).build();
 
 		} else {
-			utility.createNewGroup(groupName);
+			groupId = utility.createNewGroup(groupName);
+			jobj.put("group_name", groupName);
+			jobj.put("group_id", groupId);
 		}
-		return Response.status(Status.OK).entity(groupName).header("Access-Control-Allow-Origin", "*")
+		
+		return Response.status(Status.OK).entity(jobj.toString()).header("Access-Control-Allow-Origin", "*")
 				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();
 
 	}

@@ -41,13 +41,13 @@ public class Test {
 	private static void testHQL() {
 		Session session = HibernateSessionFactory.getSession();
 
-		String hql = "from Segment s where s.parentId=:parentId order by s.name";
+		String hql = "from Segment where id=:id or parent_id=:id";//delete
 		Query query = session.createQuery(hql);
-		query.setParameter("parentId", null);
+		query.setParameter("id", 6);
 		
 		List<Segment> list = query.list();  
 		Integer listSize = list.size();
-		System.out.println("size"+listSize);
+		System.out.println("size"+listSize);	
 		for (Segment segment : list) {
 			System.out.println(segment.getName());
 		}

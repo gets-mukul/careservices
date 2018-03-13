@@ -31,16 +31,12 @@ public class Segment extends BaseHibernateDAO implements java.io.Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-
-
 	private Integer id;
 	private String name;
 	private Integer parentId;
+	private String groupId;
 	// Constructors
-	
-	
 
-	
 	@GenericGenerator(name = "generator", strategy = "increment")
 	@Id
 	@GeneratedValue(generator = "generator")
@@ -50,8 +46,6 @@ public class Segment extends BaseHibernateDAO implements java.io.Serializable {
 		return this.id;
 	}
 
-	
-
 	public Segment(Integer id, String name, Integer parentId) {
 		super();
 		this.id = id;
@@ -59,35 +53,36 @@ public class Segment extends BaseHibernateDAO implements java.io.Serializable {
 		this.parentId = parentId;
 	}
 
-
-
 	public void setId(Integer id) {
 		this.id = id;
 	}
 
-
-@Column(name="name")
+	@Column(name = "name")
 	public String getName() {
 		return name;
 	}
-
-
 
 	public void setName(String name) {
 		this.name = name;
 	}
 
-
-	@Column(name="parent_id", nullable=true)
+	@Column(name = "parent_id", nullable = true)
 	public Integer getParentId() {
 		return parentId;
 	}
-
-
 
 	public void setParentId(Integer parentId) {
 		this.parentId = parentId;
 	}
 
-	
+	@Column(name = "group_id")
+
+	public String getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
+	}
+
 }

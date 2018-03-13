@@ -84,7 +84,7 @@ public class SMSUtility {
 		}
 	}
 
-	public void createNewGroup(String groupName) {
+	public String createNewGroup(String groupName) {
 
 		URLConnection myURLConnection = null;
 		URL myURL = null;
@@ -108,6 +108,11 @@ public class SMSUtility {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		JSONObject object = new JSONObject(sb);
+		System.out.println(object);
+		String groupId = null;	
+		//System.out.println(groupId)*/;
+		return groupId;
 	}
 
 	public void addContactToGroup(String name, String mobile, String groupId) {
