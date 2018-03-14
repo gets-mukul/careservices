@@ -3,6 +3,7 @@
  */
 package com.careservices.rest.api;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -38,6 +39,7 @@ import com.careservices.dao.ContactDAO;
 import com.careservices.dao.EmployeeTask;
 import com.careservices.dao.EmployeeTaskDAO;
 import com.careservices.dao.HibernateSessionFactory;
+import com.careservices.dao.Segment;
 
 /**
  * @author JARVIS
@@ -46,6 +48,66 @@ import com.careservices.dao.HibernateSessionFactory;
 @Path("/trial")
 public class RestClientTrailApi {
 	
+	@Path("/update/{trial_id}")
+	@POST
+	@Produces("application/json")
+	public Response updateTrial(@PathParam("trial_id")Integer trialId, String trialDetailsString)
+	{
+		System.out.println(trialDetailsString);
+		//{"start_date":"2018-02-28","start_time":"06:30","end_date":"2018-03-13","segment_id":"3"}
+		Session session = HibernateSessionFactory.getSession();
+		ClientTrail trial =(ClientTrail) session.get(ClientTrail.class,trialId);
+		JSONObject trialDetails = new JSONObject(trialDetailsString);
+		String startDateString = trialDetails.getString("start_date");
+		String startTimeString = trialDetails.getString("start_time");
+		String endDateString = trialDetails.getString("end_date");
+		Integer segmentId = trialDetails.getInt("segment_id"); 
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+		Date newStartDate = null;
+		try {
+			newStartDate = sdf.parse(startDateString);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Date newEndDate = null;
+		try {
+			newEndDate = sdf.parse(endDateString);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Time time = null;
+		try {
+			time = new Time(timeFormat.parse(startTimeString).getTime());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Segment segment = (Segment)session.get(Segment.class, segmentId);
+		trial.setSegment(segment);
+		trial.setTime(time);
+		trial.setTrailEndDate(newEndDate);
+		trial.setTrailStartDate(newStartDate);
+		
+		Transaction orgTransaction1 = null;
+		try {
+			orgTransaction1 = session.beginTransaction();			
+			session.merge(trial);
+			orgTransaction1.commit();
+		} catch (HibernateException e) {
+			e.printStackTrace();
+		}finally
+		{
+			session.clear();
+		}
+		
+		JSONObject obj = new JSONObject();
+		obj.put("message", "Trail updated successfully.");
+		return Response.status(200).entity(obj.toString()).header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();
+	
+	}
 	@Path("/delete/{trial_id}")
 	@GET
 	@Produces("application/json")
