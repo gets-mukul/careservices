@@ -19,4 +19,6 @@ public class TaskStatusConstants {
 	public static String SWITCH_OFF="SWITCH_OFF";
 	public static String NOT_REACHABLE="NOT_REACHABLE";
 	public static String AFTER_SOME_TIME="AFTER_SOME_TIME";
+	public static String DELETED="DELETED";
+	public static String TRIAL_DELETED="TRIAL_DELETED";
 }
