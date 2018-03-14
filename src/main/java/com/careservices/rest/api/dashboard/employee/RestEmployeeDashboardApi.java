@@ -40,7 +40,8 @@ public class RestEmployeeDashboardApi {
 		CareUser employee = new CareUserDAO().findById(employeeId);
 		LocalDate localDate = LocalDate.now();
 		String currentDate = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(localDate);
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
+		
 		Calendar today = Calendar.getInstance();
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = format.parse(currentDate);
@@ -64,9 +65,10 @@ public class RestEmployeeDashboardApi {
 		for (ClientTrail clientTrail : list) {
 			JSONObject jsonObject = new JSONObject();
 			jsonObject.put("id", clientTrail.getId());
-			jsonObject.put("start_date", sdf.format(clientTrail.getTrailStartDate()));
-			jsonObject.put("end_date", sdf.format(clientTrail.getTrailEndDate()));
-			jsonObject.put("time", clientTrail.getTime());
+			jsonObject.put("start_date", clientTrail.getTrailStartDate());
+			jsonObject.put("end_date", clientTrail.getTrailEndDate());
+			jsonObject.put("time", timeFormat.format(clientTrail.getTime()));
+			jsonObject.put("status", clientTrail.getStatus());
 			jsonArray.put(jsonObject);
 		}
 		JSONObject jObj = new JSONObject();
