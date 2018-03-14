@@ -55,13 +55,16 @@ public class RestClientTrailApi {
 		query.setParameter("actor", employee);
 		//query.setParameter("status", TaskStatusConstants.TRIAL);
 		List<ClientTrail>trials  = query.list();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
+		
+		Date minDate = new Date(Long.MAX_VALUE);
+		Date maxDate = new Date(Long.MIN_VALUE);
 		for(ClientTrail trial : trials)
 		{
 			if(trial.getStatus().equalsIgnoreCase(TaskStatusConstants.TRIAL))
 			{
-				String color="success";
+				String color="primary";
 				if(!new Date().before(trial.getTrailStartDate()))
 				{
 					color="danger";
@@ -73,10 +76,20 @@ public class RestClientTrailApi {
 				o.put("end_date", sdf.format(trial.getTrailEndDate()));
 				o.put("segment", trial.getSegment().getName());
 				o.put("color", color);
+				if(trial.getTrailStartDate().before(minDate))
+				{
+					minDate = trial.getTrailStartDate();
+				}
+				if(trial.getTrailStartDate().after(maxDate))
+				{
+					maxDate= trial.getTrailStartDate();
+				}
 				array.put(o);
 			}				
 		}
 		obj.put("records", array);		
+		obj.put("min_date",sdf.format(minDate));
+		obj.put("max_date",sdf.format(maxDate));
 		return Response.status(200).entity(obj.toString()).header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();
 	}
 

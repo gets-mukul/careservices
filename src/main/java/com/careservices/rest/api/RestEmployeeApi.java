@@ -200,7 +200,7 @@ public class RestEmployeeApi {
 				JSONObject obj = new JSONObject();
 				obj.put("count",count++);
 				obj.put("contact_number",number);
-				obj.put("id", employeeTask.getContact().getId());
+				obj.put("task_id", employeeTask.getId());
 				jsonArray.put(obj);
 			}
 			
