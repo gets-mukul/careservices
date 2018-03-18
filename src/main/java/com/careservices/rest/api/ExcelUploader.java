@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
+import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -54,7 +55,16 @@ public class ExcelUploader {
 	@POST
 	public Response excelFileUploader(@FormDataParam("file") InputStream uploadedInputStream,
 			@FormDataParam("file") FormDataContentDisposition fileDetail, @PathParam("user_id") Integer userId) {
-		String uploadedFileLocation = "F:\\Documentation" + UUID.randomUUID().toString() + System.currentTimeMillis()
+		File temp=null;
+		try {
+			temp = File.createTempFile("temp-file-name"+System.currentTimeMillis(), ".tmp");
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} 		
+		String absolutePath = temp.getAbsolutePath();
+		String tempFilePath = absolutePath.substring(0,absolutePath.lastIndexOf(File.separator));				
+		String uploadedFileLocation = tempFilePath + UUID.randomUUID().toString() + System.currentTimeMillis()
 				+ fileDetail.getFileName();
 
 		try {
@@ -79,7 +89,6 @@ public class ExcelUploader {
 					if (cell != null) {
 
 						String mobile = null;
-
 						mobile = cell.getNumericCellValue() + "";
 						mobile = mobile.toString().replaceAll(" ", "");
 

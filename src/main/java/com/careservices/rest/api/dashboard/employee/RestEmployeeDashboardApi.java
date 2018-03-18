@@ -69,6 +69,12 @@ public class RestEmployeeDashboardApi {
 			jsonObject.put("end_date", clientTrail.getTrailEndDate());
 			jsonObject.put("time", timeFormat.format(clientTrail.getTime()));
 			jsonObject.put("status", clientTrail.getStatus());
+			String isToday ="today";
+			if(clientTrail.getTrailStartDate().compareTo(cDate)!=0)
+			{
+				isToday="tommorrow";
+			}
+			jsonObject.put("is_today", isToday);
 			jsonArray.put(jsonObject);
 		}
 		JSONObject jObj = new JSONObject();
