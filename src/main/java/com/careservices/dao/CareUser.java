@@ -38,7 +38,7 @@ public class CareUser extends BaseHibernateDAO implements java.io.Serializable {
 	private Set<EmployeeTask> employeeTasksByAdmin = new HashSet<EmployeeTask>(0);//tasks assign by admin
 	
 	private String imageUrl;
-
+	private Set<Trade>trades = new HashSet<>(0);
 	// Constructors
 
 	/** default constructor */
@@ -180,4 +180,12 @@ public class CareUser extends BaseHibernateDAO implements java.io.Serializable {
 		this.employeeTasksByAdmin = employeeTasksByAdmin;
 	}
 
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "employee")
+	public Set<Trade> getTrades() {
+		return trades;
+	}
+
+	public void setTrades(Set<Trade> trades) {
+		this.trades = trades;
+	}
 }

@@ -21,6 +21,7 @@
 		<mapping class="com.careservices.dao.ScripCode" />
 		<mapping class="com.careservices.dao.City" />
 		<mapping class="com.careservices.dao.Segment" />
+		<mapping class="com.careservices.dao.Trade" />
 	</session-factory>
 
 </hibernate-configuration>

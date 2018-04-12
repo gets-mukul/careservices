@@ -40,6 +40,7 @@ import com.careservices.dao.EmployeeTask;
 import com.careservices.dao.EmployeeTaskDAO;
 import com.careservices.dao.HibernateSessionFactory;
 import com.careservices.dao.Segment;
+import com.careservices.dao.SegmentDAO;
 
 /**
  * @author JARVIS
@@ -48,6 +49,39 @@ import com.careservices.dao.Segment;
 @Path("/trial")
 public class RestClientTrailApi {
 	
+	@Path("/submit/{trial_id}")
+	@POST
+	@Produces("application/json")
+	public Response submitTrial(@PathParam("trial_id")Integer trialId, String trialDetailsString)
+	{
+		/*trial_id=4&segment_id=2&equity_scrip_id=221&derivative_scrip_id=8&
+		 * commodity_scrip_id=225&expiry_date=29-03-2018&strike_price=&
+		 * lot_size=&quantity=&buy=&sell=&first_target=&second_target=&stop_loss=*/
+		
+		System.out.println(trialDetailsString);
+		String a = trialDetailsString;
+		JSONObject obj = new JSONObject(a); 
+		
+		Integer segmentId = obj.getInt("segment_id");
+		Segment segment = new SegmentDAO().findById(segmentId);
+		Integer scripId = null;
+		if(segment.getName().equalsIgnoreCase("EQUITY"))
+		{
+			scripId = obj.getInt("equity_scrip_id");
+		}
+		else if(segment.getName().equalsIgnoreCase("DERIVATIVE"))
+		{
+			scripId = obj.getInt("derivative_scrip_id");
+		}
+		else if(segment.getName().equalsIgnoreCase("COMMODITY"))
+		{
+			scripId = obj.getInt("commodity_scrip_id");
+		}
+		String expiryDateString = null;//expiry_date
+		
+		obj.put("message", "Trail started successfully.");
+		return Response.status(200).entity(obj.toString()).header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build();
+	}
 	@Path("/update/{trial_id}")
 	@POST
 	@Produces("application/json")
@@ -176,6 +210,7 @@ public class RestClientTrailApi {
 				o.put("end_date", sdf.format(trial.getTrailEndDate()));
 				o.put("segment", trial.getSegment().getName());
 				o.put("segment_id", trial.getSegment().getId());
+				o.put("mob", trial.getRelatedTask().getContact().getContactNumber());
 				o.put("color", color);
 				if(trial.getTrailStartDate().before(minDate))
 				{

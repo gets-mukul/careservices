@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -36,7 +38,7 @@ public class ClientTrail extends BaseHibernateDAO implements java.io.Serializabl
 	private Segment segment;
 	private String status;
 	private EmployeeTask relatedTask;
-
+	private Set<Trade>trades = new HashSet<>(0);
 	// Constructors
 
 
@@ -141,4 +143,12 @@ public class ClientTrail extends BaseHibernateDAO implements java.io.Serializabl
 		this.status = status;
 	}
 
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "trial")
+	public Set<Trade> getTrades() {
+		return trades;
+	}
+
+	public void setTrades(Set<Trade> trades) {
+		this.trades = trades;
+	}
 }

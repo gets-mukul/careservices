@@ -33,7 +33,7 @@ public class Contact extends BaseHibernateDAO implements java.io.Serializable {
 	private Long contactNumber;
 	private Set<EmployeeTask> employeeTasks = new HashSet<EmployeeTask>(0);
 	private Timestamp uploadedAt;
-	
+	private Set<Trade>trades = new HashSet<>(0);
 
 	// Constructors
 	
@@ -144,6 +144,15 @@ public class Contact extends BaseHibernateDAO implements java.io.Serializable {
 
 	public void setUploadedAt(Timestamp uploadedAt) {
 		this.uploadedAt = uploadedAt;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "contact")
+	public Set<Trade> getTrades() {
+		return trades;
+	}
+
+	public void setTrades(Set<Trade> trades) {
+		this.trades = trades;
 	}
 
 }
